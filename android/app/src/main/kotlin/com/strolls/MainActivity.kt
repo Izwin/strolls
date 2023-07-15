@@ -1,4 +1,4 @@
-package com.example.strolls
+package com.strolls
 
 import io.flutter.embedding.android.FlutterActivity
 
