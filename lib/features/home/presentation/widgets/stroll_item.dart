@@ -3,12 +3,15 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:strolls/features/home/domain/entities/stroll_entity.dart';
 import 'package:strolls/features/home/presentation/widgets/glass_container.dart';
 import 'package:strolls/features/home/presentation/widgets/key_value_title.dart';
 
 class StrollItem extends StatelessWidget {
-  StrollItem({Key? key}) : super(key: key);
+  StrollItem({required this.strollEntity,Key? key}) : super(key: key);
+  final StrollEntity strollEntity;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class StrollItem extends StatelessWidget {
                   textBaseline: TextBaseline.ideographic,
                   children: [
                     Text(
-                      "Aquapark",
+                      strollEntity.title,
                       style: TextStyle(
                         height: 1.2,
                         fontSize: 22,
@@ -41,7 +44,7 @@ class StrollItem extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      "23/03",
+                      "${strollEntity.date.day}/${strollEntity.date.month}",
                       style: TextStyle(
                           fontSize: 14,
                           color: Colors.white.withOpacity(0.9),
@@ -51,7 +54,7 @@ class StrollItem extends StatelessWidget {
                       width: 2,
                     ),
                     Text(
-                      "19:00",
+                      "${strollEntity.date.hour}:${strollEntity.date.minute}",
                       style: TextStyle(
                           fontSize: 14,
                           color: Colors.white.withOpacity(0.9),
@@ -63,7 +66,7 @@ class StrollItem extends StatelessWidget {
                   height: 2,
                 ),
                 Text(
-                  "Aquapark near InHotel",
+                  "${strollEntity.description}",
                   style: TextStyle(
                       height: 1.2,
                       fontSize: 12,
@@ -73,10 +76,10 @@ class StrollItem extends StatelessWidget {
                 SizedBox(
                   height: 5,
                 ),
-                KeyValueTitle(title: "Gender", value: "Any"),
-                KeyValueTitle(title: "Age", value: "+18"),
-                KeyValueTitle(title: "Language", value: "English"),
-                KeyValueTitle(title: "City", value: "Minsk")
+                KeyValueTitle(title: "Gender", value: "${strollEntity.gender.capitalizeFirst}"),
+                KeyValueTitle(title: "Age", value: "${strollEntity.minimumAge}+"),
+                KeyValueTitle(title: "Language", value: "${strollEntity.language}"),
+                KeyValueTitle(title: "City", value: "${strollEntity.city}")
               ],
             ),
             Positioned(
@@ -87,19 +90,19 @@ class StrollItem extends StatelessWidget {
                   Container(
                     height: 45,
                     child: ListView.builder(
-                        itemCount: 3,
+                        itemCount: strollEntity.members.length,
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
                         itemBuilder: (i, c) {
                           return Center(
                             child: Transform.translate(
-                              offset: Offset((3 - c) * 13, 0),
+                              offset: Offset((strollEntity.members.length - c) * 13, 0),
                               child: Container(
                                 width: 45,
                                 height: 45,
                                 child: ClipOval(
                                   child: Image.network(
-                                    links[c],
+                                    strollEntity.members[c].avatarUrl,
                                     fit: BoxFit.cover,
                                   ),
                                 ),

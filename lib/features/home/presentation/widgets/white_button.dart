@@ -2,16 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WhiteButton extends StatelessWidget {
-  WhiteButton({required this.text, required this.onTap,Key? key}) : super(key: key);
+  WhiteButton({required this.text,this.height = 60, this.fontSize = 30,required this.onTap,Key? key}) : super(key: key);
 
   String text;
   Function onTap;
+  double height;
+  double fontSize;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.maxFinite,
-      height: 60,
+      height: height,
       child: ElevatedButton(
         onPressed: () {
           onTap.call();
@@ -19,7 +21,7 @@ class WhiteButton extends StatelessWidget {
         child: Text(
           text,
           style: TextStyle(
-              fontSize: 30,
+              fontSize: fontSize,
               color: Colors.black,
               fontWeight: FontWeight.bold),
         ),

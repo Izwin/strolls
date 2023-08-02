@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:strolls/core/getit/get_it.dart';
 import 'package:strolls/core/widgets/title_text.dart';
 import 'package:strolls/features/home/presentation/widgets/glass_container_with_tap.dart';
 
+import '../bloc/strolls_bloc.dart';
 import '../widgets/background_with_circles.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/stroll_item.dart';
@@ -19,83 +22,72 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        BackgroundWithCircles(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 10, right: 20, left: 20),
-            child: SingleChildScrollView(
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        _buildAppBar(),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        _buildAllFriendsButtons(),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Icon(
-                          CupertinoIcons.bars,
-                          color: Colors.white.withOpacity(0.7),
-                          size: 30,
-                        ),
-                      ],
-                    ),
-                    ..._buildStrollList()
-                  ],
+    return BlocProvider(
+      create: (context) => getIt<StrollsBloc>()..add(GetStrollsEvent()),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          BackgroundWithCircles(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, right: 20, left: 20),
+              child: SingleChildScrollView(
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: [
+                          _buildAppBar(),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          _buildAllFriendsButtons(),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Icon(
+                            CupertinoIcons.bars,
+                            color: Colors.white.withOpacity(0.7),
+                            size: 30,
+                          ),
+                        ],
+                      ),
+                      _getStrolls()
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
     ;
   }
 
-  List<Widget> _buildStrollList() {
-    return isAllStrollsShown
-        ? [
-            const SizedBox(
-              height: 20,
-            ),
-            StrollItem(),
-            const SizedBox(
-              height: 20,
-            ),
-            StrollItem(),
-            const SizedBox(
-              height: 20,
-            ),
-            StrollItem(),
-            const SizedBox(
-              height: 20,
-            ),
-            StrollItem(),
-            const SizedBox(
-              height: 20,
-            ),
-            StrollItem(),
-          ]
-        : [
-            const SizedBox(
-              height: 20,
-            ),
-            StrollItem(),
-            const SizedBox(
-              height: 20,
-            ),
-            StrollItem(),
-          ];
+  Widget _getStrolls() {
+    return BlocBuilder<StrollsBloc, StrollsState>(
+      builder: (context, state) {
+        if (state is GotStrollsState) {
+          return ListView.builder(
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  SizedBox(height: 20,),
+                  StrollItem(strollEntity: state.strolls[index]),
+                ],
+              );
+            },
+            itemCount: state.strolls.length,
+            shrinkWrap: true,
+          );
+        }
+        return Center();
+      },
+    );
   }
 
   Widget _buildAppBar() {

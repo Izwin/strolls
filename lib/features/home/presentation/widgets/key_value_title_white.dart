@@ -11,12 +11,12 @@ class KeyValueTitleProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return KeyValueTitle(title: title, value: value,titleTextStyle: TextStyle(
         fontSize: 12,
-        color: Colors.white,
+        color: Colors.white.withOpacity(0.75),
         fontWeight: FontWeight.w400
     ),textTextStyle: TextStyle(
         fontSize: 14,
         color: Color(0xFFFFE5BF),
-        fontWeight: FontWeight.bold
+        fontWeight: FontWeight.w500
     ),
     );
   }

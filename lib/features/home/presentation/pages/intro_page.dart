@@ -4,7 +4,7 @@ import 'package:strolls/features/home/presentation/pages/main_page.dart';
 import 'package:strolls/features/home/presentation/widgets/background_with_circles.dart';
 import 'package:strolls/features/home/presentation/widgets/white_button.dart';
 
-import 'login_page.dart';
+import '../../../auth/presentation/pages/login_page.dart';
 
 class IntroPage extends StatelessWidget {
   const IntroPage({Key? key}) : super(key: key);
@@ -14,13 +14,14 @@ class IntroPage extends StatelessWidget {
     return Scaffold(
       body: BackgroundWithCircles(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20,bottom: 35,right: 25,left: 25),
+          padding:
+              const EdgeInsets.only(top: 20, bottom: 35, right: 25, left: 25),
           child: SafeArea(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Hello!",
                   style: TextStyle(
                       color: Colors.white,
@@ -28,10 +29,10 @@ class IntroPage extends StatelessWidget {
                       fontSize: 86,
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
-                Text(
+                const Text(
                   "Lets\nStart!\nIt will\nTakes\nAbout\n2 minutes.",
                   style: TextStyle(
                       color: Colors.white,
@@ -39,13 +40,15 @@ class IntroPage extends StatelessWidget {
                       fontSize: 55,
                       fontWeight: FontWeight.w400),
                 ),
-                Spacer(),
-                WhiteButton(text: "Start", onTap: (){
-                  Navigator.push(context,
-                      CupertinoPageRoute(builder: (context) {
+                const Spacer(),
+                WhiteButton(
+                    text: "Start",
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(CupertinoPageRoute(builder: (context) {
                         return LoginPage();
                       }));
-                }),
+                    }),
               ],
             ),
           ),

@@ -7,20 +7,27 @@ class KeyValueTitle extends StatelessWidget {
   final String title,value;
   final TextStyle? titleTextStyle;
   final TextStyle? textTextStyle;
+
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("$title: ",
-            style: titleTextStyle != null ? titleTextStyle : TextStyle(
-                fontSize: 12,
-                color: Colors.white.withOpacity(0.6),
-                fontWeight: FontWeight.w400)),
-        Text(value,
-            style: textTextStyle != null ? textTextStyle : TextStyle(
-                fontSize: 12,
-                color: Color(0xFFD0BDA1),
-                fontWeight: FontWeight.w500)),
+        Flexible(
+          child: Text("$title: ",
+              style: titleTextStyle != null ? titleTextStyle : TextStyle(
+                  fontSize: 12,
+                  color: Colors.white.withOpacity(0.6),
+                  fontWeight: FontWeight.w400)),
+        ),
+        Expanded(
+          child: Text(value,
+              style: textTextStyle != null ? textTextStyle : TextStyle(
+                  fontSize: 12,
+
+                  color: Color(0xFFD0BDA1),
+                  fontWeight: FontWeight.w500)),
+        ),
       ],
     );
   }

@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:strolls/features/auth/presentation/pages/register_page.dart';
 import 'package:strolls/features/home/presentation/pages/home_page.dart';
 import 'package:strolls/features/home/presentation/pages/main_page.dart';
 import 'package:strolls/features/home/presentation/widgets/background_with_circles.dart';
 import 'package:strolls/features/home/presentation/widgets/glass_container.dart';
-import 'package:strolls/features/home/presentation/widgets/gradient_text_field.dart';
+import 'package:strolls/features/auth/presentation/widgets/gradient_text_field.dart';
 import 'package:strolls/features/home/presentation/widgets/white_button.dart';
 
 class LoginPage extends StatelessWidget {
@@ -73,7 +74,6 @@ class LoginPage extends StatelessWidget {
                                                 alignment: Alignment.topCenter,
                                                 child: GradientTextField(
                                                   label: "Username or email",
-                                                  hint: "Password",
                                                   controller:
                                                       username,
                                                 ),
@@ -84,7 +84,6 @@ class LoginPage extends StatelessWidget {
                                                 alignment: Alignment.bottomCenter,
                                                 child: GradientTextField(
                                                   label: "Password",
-                                                  hint: "Password",
                                                   controller:
                                                       password,
                                                 ),
@@ -108,11 +107,18 @@ class LoginPage extends StatelessWidget {
                                           ],);
                                         });
                                       },
-                                      child: Text(
-                                        "I have not an account.",
-                                        style: TextStyle(
-                                            color: Colors.white.withOpacity(0.7),
-                                            fontSize: 16),
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          Navigator.of(context).push(CupertinoPageRoute(builder: (context){
+                                            return RegisterPage();
+                                          }));
+                                        },
+                                        child: Text(
+                                          "I have not an account.",
+                                          style: TextStyle(
+                                              color: Colors.white.withOpacity(0.7),
+                                              fontSize: 16),
+                                        ),
                                       ),
                                     ),
                                   )
