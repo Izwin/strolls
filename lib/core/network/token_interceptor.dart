@@ -27,6 +27,7 @@ class TokenInterceptor extends Interceptor {
       var prefs = await SharedPreferences.getInstance();
       final someToken = prefs.getString("refreshToken");
       if (someToken == null) {
+        super.onError(err, handler);
         return;
       }
       var tokenResponse =
@@ -46,9 +47,13 @@ class TokenInterceptor extends Interceptor {
           );
           return handler.resolve(await dio.request(options.path,
               options: opts, data: err!.requestOptions.data));
-        } else {}
+        } else {
+          super.onError(err, handler);
+          return;
+        }
       } else {
-        throw new Exception();
+        super.onError(err, handler);
+        return;
       }
     }
     super.onError(err, handler);

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
@@ -22,20 +23,12 @@ import 'features/home/presentation/pages/main_page.dart';
 
 Future<void> main() async {
   setup();
-  runApp( MyApp());
-  final wsUrl = Uri.parse('ws://10.0.2.2:8080/chat');
-  var channel = WebSocketChannel.connect(wsUrl);
+  runApp(MyApp());
 
-
-  channel.stream.listen((message) {
-    print(message);
-    print("SDFSFS");
-    channel.sink.add('received!');
-  });
-  channel.sink.add("{\"hello\" : \"hello\"}");
 
   var prefs = await SharedPreferences.getInstance();
-  await AppMetrica.activate(AppMetricaConfig("00fbe501-83a5-4172-8384-f845c4ffbc71"));
+  await AppMetrica.activate(
+      AppMetricaConfig("00fbe501-83a5-4172-8384-f845c4ffbc71"));
   await AppMetrica.reportError(message: 'My first AppMetrica event!');
 }
 
@@ -44,15 +37,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-        useMaterial3: true,
+    return BlocProvider(
+      create: (context) =>
+          getIt<AuthenticatorBloc>()..add(GetProfileAuthenticatorEvent()),
+      child: GetMaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+          useMaterial3: true,
+        ),
+        home: Authenticator(),
       ),
-      home: Authenticator(),
     );
   }
 }
-
-

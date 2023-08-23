@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:strolls/features/home/presentation/widgets/glass_container.dart';
 
 class GradientTextField extends StatelessWidget {
-  GradientTextField({required this.label, this.height = 60,this.maxLines,this.minLines,required this.controller,Key? key}) : super(key: key);
-  String label;
+  GradientTextField({this.label, this.height = 60,this.maxLines,this.minLines,required this.controller,Key? key}) : super(key: key);
+  String? label;
   TextEditingController controller;
   double? height;
   int? minLines;
@@ -27,7 +27,7 @@ class GradientTextField extends StatelessWidget {
         style: const TextStyle(color: Colors.white,fontSize: 20,height:1),
         decoration: InputDecoration(
           fillColor: Colors.transparent,
-          label: Text(label,style: TextStyle(color: Colors.white.withOpacity(0.4)),),
+          label: label != null ? Text(label!,style: TextStyle(color: Colors.white.withOpacity(0.4)),) : null,
           filled: true,
           floatingLabelStyle: TextStyle(fontSize: 16,height: 1),
           border: InputBorder.none,

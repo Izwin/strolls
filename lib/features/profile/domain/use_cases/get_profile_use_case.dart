@@ -10,6 +10,7 @@ class GetProfileUseCase {
 
   Future<Either<Failure, UserEntity>> call() {
     var profile = userRepository.getProfile();
+
     return profile;
   }
 }

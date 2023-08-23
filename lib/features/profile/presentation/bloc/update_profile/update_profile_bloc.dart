@@ -32,7 +32,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
         updateProfileEvent.bio,
         updateProfileEvent.languages);
     result.fold((l) {
-      emit(SendUpdateProfileErrorState(error: l.message));
+      emit(ProfileUpdateError(error: l.message));
     }, (r) {
       emit(ProfileUpdatedState());
     });
@@ -45,13 +45,13 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       var result = await uploadProfileImageUseCase.call(
           updateProfileEvent.file!);
       result.fold((l) {
-        emit(UploadImageErrorState(error: "Upload image error"));
+        emit(ProfileUpdateError(error: "Upload image error"));
       }, (r) {
         emit(ImageUploadedState());
       });
     }
     else{
-      emit(UploadImageErrorState(error: "Upload image error"));
+      emit(ProfileUpdateError(error: "Upload image error"));
     }
 
 

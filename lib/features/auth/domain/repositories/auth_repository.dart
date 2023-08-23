@@ -11,4 +11,6 @@ abstract class AuthRepository {
   Future<Either<Failure, List<String>>> getLanguages();
 
   Future<Either<Failure, void>> register(SendRegistrationParamsModel sendRegistrationParams);
+
+  Future<Either<Failure, void>> auth(String username,String pass);
 }

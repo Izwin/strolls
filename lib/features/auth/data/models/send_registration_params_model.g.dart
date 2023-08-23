@@ -18,6 +18,7 @@ SendRegistrationParamsModel _$SendRegistrationParamsModelFromJson(
       dateOfBirth: DateTime.parse(json['dateOfBirth'] as String),
       email: json['email'] as String,
       username: json['username'] as String,
+      gender: json['gender'] as String,
       password: json['password'] as String,
     );
 
@@ -29,6 +30,7 @@ Map<String, dynamic> _$SendRegistrationParamsModelToJson(
       'username': instance.username,
       'email': instance.email,
       'password': instance.password,
+      'gender': instance.gender,
       'dateOfBirth': instance.dateOfBirth.toIso8601String(),
       'bio': instance.bio,
       'languages': instance.languages,

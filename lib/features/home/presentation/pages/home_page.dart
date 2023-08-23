@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strolls/core/getit/get_it.dart';
 import 'package:strolls/core/widgets/title_text.dart';
 import 'package:strolls/features/home/presentation/widgets/glass_container_with_tap.dart';
+import 'package:strolls/features/notification/presentation/pages/notifications_page.dart';
+import 'package:strolls/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
 import '../bloc/strolls_bloc.dart';
 import '../widgets/background_with_circles.dart';
@@ -22,8 +24,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<StrollsBloc>()..add(GetStrollsEvent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => getIt<StrollsBloc>()..add(GetStrollsEvent()),
+        ),
+        BlocProvider(
+          create: (context) => getIt<ProfileBloc>()..add(GetProfileEvent()),
+        ),
+      ],
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -69,85 +78,114 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _getStrolls() {
-    return BlocBuilder<StrollsBloc, StrollsState>(
-      builder: (context, state) {
-        if (state is GotStrollsState) {
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  SizedBox(height: 20,),
-                  StrollItem(strollEntity: state.strolls[index]),
-                ],
-              );
-            },
-            itemCount: state.strolls.length,
-            shrinkWrap: true,
-          );
-        }
-        return Center();
-      },
-    );
+    return BlocBuilder<ProfileBloc, ProfileState>(
+  builder: (context, profileState) {
+    if(profileState is GotProfileState){
+      return BlocBuilder<StrollsBloc, StrollsState>(
+        builder: (context, state) {
+          if (state is GotStrollsState) {
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    StrollItem(strollEntity: state.strolls[index], profileId: profileState.userEntity.id,),
+                  ],
+                );
+              },
+              itemCount: state.strolls.length,
+              shrinkWrap: true,
+            );
+          }
+          return const Center();
+        },
+      );
+
+    }
+    return const Center(child: CupertinoActivityIndicator(),);
+  },
+);
   }
 
   Widget _buildAppBar() {
-    return Container(
-      height: 70,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TitleText(title: "Strolls"),
-          const SizedBox(
-            width: 10,
-          ),
-          Container(
-              width: 35,
-              height: 35,
-              margin: EdgeInsets.only(top: 4),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment(0.00, -1.00),
-                  end: Alignment(0, 1),
-                  colors: [Color(0xFFFFE5BF), Color(0xFFFFC555)],
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        if(state is GotProfileState){
+          return Container(
+            height: 70,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TitleText(title: "Strolls"),
+                const SizedBox(
+                  width: 10,
                 ),
-              ),
-              child: const Center(
-                child: Text(
-                  '1',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, CupertinoPageRoute(builder: (context){
+                      return const NotificationsPage();
+                    }));
+                  },
+                  child: Container(
+                      width: 35,
+                      height: 35,
+                      margin: const EdgeInsets.only(top: 4),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment(0.00, -1.00),
+                          end: Alignment(0, 1),
+                          colors: [Color(0xFFFFE5BF), Color(0xFFFFC555)],
+                        ),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          '1',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      )),
+                ),
+                const Spacer(),
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: 65,
+                    height: 65,
+                    child: ClipOval(
+                      child: Image.network(
+                        state.userEntity.avatarUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        begin: Alignment(0.00, -1.00),
+                        end: Alignment(0, 1),
+                        colors: [Color(0xFFBFF8FF), Color(0xFF55CCFF)],
+                      ),
+                    ),
                   ),
                 ),
-              )),
-          const Spacer(),
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              width: 65,
-              height: 65,
-              child: ClipOval(
-                child: Image.network(
-                  "https://www.drivetest.de/wp-content/uploads/2019/08/drivetest-avatar-m.png",
-                  fit: BoxFit.cover,
-                ),
-              ),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment(0.00, -1.00),
-                  end: Alignment(0, 1),
-                  colors: [Color(0xFFBFF8FF), Color(0xFF55CCFF)],
-                ),
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
+          );
+        }
+        else if(state is ProfileLoadingState){
+          return const Center(child: CupertinoActivityIndicator());
+        }
+        else {
+          return const Center(child: Text("Error"),);
+        }
+      },
     );
   }
 
@@ -201,22 +239,22 @@ class _HomePageState extends State<HomePage> {
 
   LinearGradient getSelectedGradient() {
     return LinearGradient(
-      begin: Alignment(-0.95, -0.32),
-      end: Alignment(0.95, 0.32),
+      begin: const Alignment(-0.95, -0.32),
+      end: const Alignment(0.95, 0.32),
       colors: [
-        Color(0xFFFF0000).withOpacity(0.2),
-        Color(0xFF6D4904).withOpacity(0.2)
+        const Color(0xFFFF0000).withOpacity(0.2),
+        const Color(0xFF6D4904).withOpacity(0.2)
       ],
     );
   }
 
   LinearGradient getUnselectedGradient() {
     return LinearGradient(
-      begin: Alignment(-0.95, -0.32),
-      end: Alignment(0.95, 0.32),
+      begin: const Alignment(-0.95, -0.32),
+      end: const Alignment(0.95, 0.32),
       colors: [
-        Color(0xFF533C46).withOpacity(0.2),
-        Color(0x00533C46).withOpacity(0.2)
+        const Color(0xFF533C46).withOpacity(0.2),
+        const Color(0x00533C46).withOpacity(0.2)
       ],
     );
   }

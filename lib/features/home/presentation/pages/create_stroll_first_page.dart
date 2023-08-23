@@ -48,9 +48,10 @@ class _CreateStrollFirstPageState extends State<CreateStrollFirstPage> {
                       Center(
                         child: GradientTextField(
                             label: "Title",
+                            maxLines: 1,
                             controller: titleController),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Center(
@@ -58,12 +59,12 @@ class _CreateStrollFirstPageState extends State<CreateStrollFirstPage> {
                         label: "Date of birth",
                         onDateChanged: (d) => dateTime = d,
                       )),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Center(
                         child: GradientTextField(
-                            label: "Note", controller: noteController),
+                            label: "Note", maxLines:1,controller: noteController),
                       ),
                     ],
                   ),

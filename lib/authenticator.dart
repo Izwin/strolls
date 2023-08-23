@@ -19,27 +19,21 @@ class Authenticator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-              create: (context) =>
-                  getIt<AuthenticatorBloc>()..add(GetProfileEvent())),
-        ],
-        child: BlocListener<AuthenticatorBloc, AuthenticatorState>(
-          listener: (BuildContext context, state) {
-            if (state is AuthorizedState) {
-              print("NAVIGATE");
-              navigate(child: MainPage());
-            } else if (state is UnauthorizedState) {
-              navigate(child: IntroPage());
-            }
-          },
-          child: BackgroundWithCircles(
-            child: Center(
-              child: CupertinoActivityIndicator(),
-            ),
-          ),
-        ));
+    return BlocListener<AuthenticatorBloc, AuthenticatorState>(
+      listener: (BuildContext context, state) {
+        if (state is AuthorizedState) {
+          print("NAVIGATE");
+          navigate(child: MainPage());
+        } else if (state is UnauthorizedState) {
+          navigate(child: IntroPage());
+        }
+      },
+      child: BackgroundWithCircles(
+        child: Center(
+          child: CupertinoActivityIndicator(),
+        ),
+      ),
+    );
   }
 
   void navigate({required Widget child}) {

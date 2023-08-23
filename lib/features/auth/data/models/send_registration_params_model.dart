@@ -9,6 +9,7 @@ class SendRegistrationParamsModel{
   final String username;
   final String email;
   final String password;
+  final String gender;
   final DateTime dateOfBirth;
   final String bio;
   final List<String> languages;
@@ -23,6 +24,7 @@ class SendRegistrationParamsModel{
     required this.dateOfBirth,
     required this.email,
     required this.username,
+    required this.gender,
     required this.password,
   });
 

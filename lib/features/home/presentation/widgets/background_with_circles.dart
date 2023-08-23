@@ -9,31 +9,29 @@ class BackgroundWithCircles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       children: [
         Container(
           decoration: const BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.black, Color(0xFF15010A)])),
-          child: const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [],
-            ),
+                  colors: [Colors.black, Color(0xFF15010A)])
           ),
-        ),
-        Positioned(
-          top: 110,
-          right: -130,
-          child: BackgroundCircle(),
         ),
         Positioned(
           bottom: 50,
           left: -130,
-          child: BackgroundCircle(),
+          child: BackgroundCircle(height: 300,width: 300,),
         ),
-        child
+
+        Positioned(
+          top: 110,
+          right: -130,
+          child: BackgroundCircle(height: 300,width: 300,),
+        ),
+        child,
+
       ],
     );
   }

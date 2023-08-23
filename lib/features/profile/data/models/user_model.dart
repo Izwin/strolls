@@ -9,7 +9,7 @@ part 'user_model.g.dart';
 class UserModel extends UserEntity {
   UserModel(
       {required super.id,
-      required super.avatarUrl,
+      super.avatarUrl = "",
       required super.firstname,
       required super.lastname,
       required super.age,
@@ -18,7 +18,7 @@ class UserModel extends UserEntity {
       required super.languages,
       required super.username,
       required super.bio,
-      required List<UserModel> super.friends});
+      List<UserModel> super.friends = const []});
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);

@@ -12,15 +12,16 @@ import '../widgets/gradient_gender_picker.dart';
 import '../widgets/gradient_text_field.dart';
 
 class RegisterFirstPage extends StatefulWidget {
-  RegisterFirstPage({required this.firstnameController,
-    required this.lastnameController,
-    required this.onGenderChanged,
-    required this.onDateChanged,
-    required this.onCityChanged,
-    this.dateTime,
-    this.city,
-    this.gender,
-    super.key});
+  RegisterFirstPage(
+      {required this.firstnameController,
+      required this.lastnameController,
+      required this.onGenderChanged,
+      required this.onDateChanged,
+      required this.onCityChanged,
+      this.dateTime,
+      this.city,
+      this.gender,
+      super.key});
 
   TextEditingController firstnameController;
   TextEditingController lastnameController;
@@ -39,82 +40,82 @@ class _RegisterFirstPageState extends State<RegisterFirstPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-      getIt<RegistrationBloc>()
-        ..add(GetCitiesEvent()),
+      create: (context) => getIt<RegistrationBloc>()..add(GetCitiesEvent()),
       child: GlassContainer(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Center(
+              child: GradientTextField(
+                  label: "Firstname",
+                  maxLines: 1,
+                  controller: widget.firstnameController),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: GradientTextField(
+                  label: "Lastname",
+                  maxLines: 1,
+                  controller: widget.lastnameController),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
               children: [
-                Center(
-                  child: GradientTextField(
-                      label: "Firstname",
-                      controller: widget.firstnameController),
+                Expanded(
+                    flex: 10,
+                    child: GradientDatePicker(
+                      label: "Date of birth",
+                      dateTime: widget.dateTime,
+                      onDateChanged: widget.onDateChanged,
+                    )),
+                const SizedBox(
+                  width: 10,
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: GradientTextField(
-                      label: "Lastname", controller: widget.lastnameController),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                        flex: 10,
-                        child: GradientDatePicker(
-                          label: "Date of birth",
-                          dateTime: widget.dateTime,
-
-                          onDateChanged: widget.onDateChanged,
-                        )),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      flex: 8,
-                      child: GradientGenderPicker(
-                        label: "Gender",
-                        gender: widget.gender,
-                        onSelectedItemChanged: widget.onGenderChanged,
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                BlocBuilder<RegistrationBloc, RegistrationState>(
-                  builder: (context, state) {
-                    if (state is GotCitiesState) {
-                      return Center(
-                        child: GradientDropDown(
-                          label: "City",
-                          item: widget.city,
-                          items: state.cities,
-                          onChanged: widget.onCityChanged,
-                        ),
-                      );
-                    } else if (state is RegistrationLoading) {
-                      return Center(
-                        child: CupertinoActivityIndicator(),
-                      );
-                    } else {
-                      return Center(
-                        child: Text("Error"),
-                      );
-                    }
-                  },
-                ),
+                Expanded(
+                  flex: 8,
+                  child: GradientGenderPicker(
+                    label: "Gender",
+                    gender: widget.gender,
+                    onSelectedItemChanged: widget.onGenderChanged,
+                  ),
+                )
               ],
             ),
-          )),
+            const SizedBox(
+              height: 20,
+            ),
+            BlocBuilder<RegistrationBloc, RegistrationState>(
+              builder: (context, state) {
+                if (state is GotCitiesState) {
+                  return Center(
+                    child: GradientDropDown(
+                      label: "City",
+                      item: widget.city,
+                      items: state.cities,
+                      onChanged: widget.onCityChanged,
+                    ),
+                  );
+                } else if (state is RegistrationLoading) {
+                  return const Center(
+                    child: CupertinoActivityIndicator(),
+                  );
+                } else {
+                  return const Center(
+                    child: Text("Error"),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      )),
     );
   }
 }

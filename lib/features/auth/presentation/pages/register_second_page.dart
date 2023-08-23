@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strolls/core/getit/get_it.dart';
 import 'package:strolls/features/auth/presentation/bloc/registration_bloc.dart';
 import 'package:strolls/features/auth/presentation/bloc/registration_event.dart';
+import 'package:strolls/features/auth/presentation/widgets/gradient_language_selector.dart';
+import 'package:strolls/features/profile/presentation/widgets/languages_selector_widget.dart';
 
 import '../../../home/presentation/widgets/glass_container.dart';
 import '../bloc/registration_state.dart';
@@ -19,7 +21,7 @@ class RegisterSecondPage extends StatefulWidget {
 
   List<String?> languages;
   TextEditingController bioController;
-  Function(String, int) onLanguageChanged;
+  Function(List<String?>) onLanguageChanged;
 
 
   @override
@@ -38,82 +40,8 @@ class _RegisterSecondPageState extends State<RegisterSecondPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListView.builder(
-              padding: EdgeInsets.only(top: 20),
-              itemBuilder: (context, index) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    BlocBuilder<RegistrationBloc, RegistrationState>(
-                      builder: (context, state) {
-                        if (state is RegistrationLoading) {
-                          return Center(
-                            child: CupertinoActivityIndicator(),
-                          );
-                        } else if (state is GotLanguagesState) {
-                          return GradientDropDown(
-                            label: "Language",
-                            item: widget.languages[index],
-                            items: state.languages,
-                            onChanged: (language) {
-                              widget.onLanguageChanged(language, index);
-                            },
-                          );
-                        }
-                        return Center(
-                          child: Text("Error"),
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Visibility(
-                          visible:
-                              index == widget.languages.length - 1 && index > 0,
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                widget.languages.removeAt(index);
-                              });
-                              setState(() {});
-                            },
-                            icon: const Icon(
-                              Icons.remove_circle,
-                              size: 40,
-                            ),
-                            color: Colors.white,
-                          ),
-                        ),
-                        Visibility(
-                          visible: index == widget.languages.length - 1,
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                widget.languages.add(null);
-                              });
-                              setState(() {});
-                            },
-                            icon: const Icon(
-                              Icons.add_circle_sharp,
-                              size: 40,
-                            ),
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                );
-              },
-              itemCount: widget.languages.length,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-            ),
-            SizedBox(
+            LanguagesSelectorWidget(languages: widget.languages,onChanged: widget.onLanguageChanged,),
+            const SizedBox(
               height: 10,
             ),
             Padding(

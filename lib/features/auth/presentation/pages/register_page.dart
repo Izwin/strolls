@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strolls/core/bloc/authenticator_bloc.dart';
 import 'package:strolls/core/getit/get_it.dart';
+import 'package:strolls/core/utills/dialog_utils.dart';
+import 'package:strolls/core/widgets/gradient_scaffold.dart';
+import 'package:strolls/core/widgets/title_text.dart';
 import 'package:strolls/features/auth/domain/entities/city_entity.dart';
 import 'package:strolls/features/auth/domain/use_cases/get_cities_use_case.dart';
 import 'package:strolls/features/auth/presentation/bloc/registration_bloc.dart';
@@ -57,15 +60,10 @@ class _RegisterPageState extends State<RegisterPage> {
             ..add(GetCitiesEvent())
             ..add(GetLanguagesEvent()),
         ),
-        BlocProvider(
-          create: (context) => getIt<AuthenticatorBloc>(),
-        ),
       ],
       child: BlocBuilder<AuthenticatorBloc, AuthenticatorState>(
         builder: (context, state) {
-          return Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: BackgroundWithCircles(
+          return GradientScaffold(
               child: GestureDetector(
                   onHorizontalDragEnd: (dragDetail) {
                     if (dragDetail.velocity.pixelsPerSecond.dx < 1) {
@@ -79,48 +77,36 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   child: SingleChildScrollView(
                     child: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 20, bottom: 25, right: 20, left: 20),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                              minHeight: MediaQuery.of(context).size.height -
-                                  45 -
-                                  MediaQuery.of(context).viewPadding.top),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                titleList[currentPage],
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    height: 1.2,
-                                    fontSize: 56,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 90,
-                              ),
-                              getPages(),
-                              SizedBox(
-                                height: 90,
-                              ),
-                              Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: WhiteButton(
-                                    text: "Continue",
-                                    onTap: () {
-                                      onContinuePressed(context);
-                                    },
-                                  ))
-                            ],
-                          ),
+                      child: ConstrainedBox(
+                        // Get screen height for Expanded works correctly
+                        constraints: BoxConstraints(
+                            minHeight: MediaQuery.of(context).size.height -
+                                45 -
+                                MediaQuery.of(context).viewPadding.top),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TitleText(title: titleList[currentPage]),
+                            SizedBox(
+                              height: 90,
+                            ),
+                            getPages(),
+                            SizedBox(
+                              height: 90,
+                            ),
+                            WhiteButton(
+                              text: "Continue",
+                              onTap: () {
+                                onContinuePressed(context);
+                              },
+                            )
+                          ],
                         ),
                       ),
                     ),
-                  )),
+                  ),
             ),
           );
         },
@@ -148,8 +134,8 @@ class _RegisterPageState extends State<RegisterPage> {
       RegisterSecondPage(
         languages: languages,
         bioController: bioController,
-        onLanguageChanged: (string, int) {
-          languages[int] = string;
+        onLanguageChanged: (languageList) {
+          languages = languageList;
         },
       ),
       RegisterThirdPage(
@@ -180,33 +166,10 @@ class _RegisterPageState extends State<RegisterPage> {
     return false;
   }
 
-  void showErrorsDialog(BuildContext context) {
-    showCupertinoDialog(
-        context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: Text("Fill all fields"),
-            actions: [
-              CupertinoDialogAction(
-                child: Text("Ok"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          );
-        });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   void onContinuePressed(BuildContext context) {
-    var authenticatorBloc = context.read<AuthenticatorBloc>();
+    var authenticatorBloc = getIt<AuthenticatorBloc>();
     if (hasErrors()) {
-      showErrorsDialog(context);
+      DialogUtils.showDialog(context, "Please, fill all fields");
       return;
     }
     if (currentPage < 2) {
@@ -223,6 +186,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 languages: languages.map((e) => e!).toList(),
                 lastname: lastnameController.text,
                 bio: bioController.text,
+                gender: gender!.toUpperCase(),
                 dateOfBirth: date!,
                 username: usernameController.text,
                 password: passwordController.text)),

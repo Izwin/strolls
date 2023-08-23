@@ -18,8 +18,8 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) => UserEntity(
           (json['languages'] as List<dynamic>).map((e) => e as String).toList(),
       username: json['username'] as String,
       bio: json['bio'] as String,
-      friends: (json['friends'] as List<dynamic>?)
-          ?.map((e) => UserEntity.fromJson(e as Map<String, dynamic>))
+      friends: (json['friends'] as List<dynamic>)
+          .map((e) => UserEntity.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

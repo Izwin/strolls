@@ -2,17 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RoundedAvatar extends StatelessWidget {
-  const RoundedAvatar({required this.url, super.key});
+  RoundedAvatar({this.size = 120,required this.url, super.key});
 
   final String url;
+
+  double size;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        height: 120,
-        width: 120,
+        height: size,
+        width: size,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20), color: Colors.yellow),
         child: Image.network(

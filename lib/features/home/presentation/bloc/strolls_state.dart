@@ -18,4 +18,11 @@ class GotStrollsState extends StrollsState {
   GotStrollsState({required this.strolls});
 }
 
+
+class GotStrollByIdState extends StrollsState{
+  final StrollEntity strollEntity;
+
+  GotStrollByIdState({required this.strollEntity});
+}
+
 class StrollCreatedState extends StrollsState{}

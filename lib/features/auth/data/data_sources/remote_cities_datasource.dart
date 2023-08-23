@@ -40,6 +40,17 @@ class RemoteCitiesDatasource {
     } else {
       throw MyServerException(message: response.data["errorMessage"] ?? "");
     }
-    return retrofitClient.register(sendRegistrationParams);
+  }
+
+  Future<dynamic> auth(String username,String pass) async {
+    var response = await dio.post("/auth/auth",data: {
+      "username" : username,
+      "password" : pass,
+    });
+    if (response.statusCode! >= 200 && response.statusCode! <= 300) {
+      return response.data;
+    } else {
+      throw MyServerException(message: response.data["errorMessage"] ?? "");
+    }
   }
 }

@@ -52,4 +52,18 @@ class AuthRepositoryImpl extends AuthRepository{
     }
   }
 
+  @override
+  Future<Either<Failure, void>> auth(String username, String pass) async {
+    try{
+      var result = await remoteCitiesDatasource.auth(username, pass);
+      var prefs = await SharedPreferences.getInstance();
+      await prefs.setString("accessToken", result["accessToken"]);
+      await prefs.setString("refreshToken", result["refreshToken"]);
+      return Right(result);
+    }
+    on Exception catch (e){
+      return Left(Failure( message: e.toString()));
+    }
+  }
+
 }

@@ -13,7 +13,7 @@ class UserEntity {
   final String username;
   final int age;
   final List<String> languages;
-  final List<UserEntity>? friends;
+  final List<UserEntity> friends;
   final String city;
   final String gender;
   final String bio;
