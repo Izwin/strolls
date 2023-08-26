@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strolls/core/utills/dialog_utils.dart';
 import 'package:strolls/core/widgets/gradient_scaffold.dart';
 import 'package:strolls/core/widgets/title_text.dart';
+import 'package:strolls/features/auth/presentation/pages/forget_password_page.dart';
 import 'package:strolls/features/auth/presentation/pages/register_page.dart';
 import 'package:strolls/features/home/presentation/pages/home_page.dart';
 import 'package:strolls/features/home/presentation/pages/main_page.dart';
@@ -13,6 +14,8 @@ import 'package:strolls/features/auth/presentation/widgets/gradient_text_field.d
 import 'package:strolls/features/home/presentation/widgets/white_button.dart';
 
 import '../../../../core/bloc/authenticator_bloc.dart';
+import '../../../../core/bloc/authenticator_event.dart';
+import '../../../../core/bloc/authenticator_state.dart';
 import '../../../../core/getit/get_it.dart';
 
 class LoginPage extends StatelessWidget {
@@ -104,21 +107,41 @@ class LoginPage extends StatelessWidget {
                                 ),
                                 Positioned(
                                   bottom: 25,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          CupertinoPageRoute(
-                                              builder: (context) {
-                                        return const RegisterPage();
-                                      }));
-                                    },
-                                    child: Text(
-                                      "I have not an account.",
-                                      style: TextStyle(
-                                          color: Colors.white
-                                              .withOpacity(0.7),
-                                          fontSize: 16),
-                                    ),
+                                  child: Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                              CupertinoPageRoute(
+                                                  builder: (context) {
+                                            return ForgetPasswordPage();
+                                          }));
+                                        },
+                                        child: Text(
+                                          "Forget Password",
+                                          style: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(0.7),
+                                              fontSize: 16),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                              CupertinoPageRoute(
+                                                  builder: (context) {
+                                            return const RegisterPage();
+                                          }));
+                                        },
+                                        child: Text(
+                                          "I have not an account.",
+                                          style: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(0.7),
+                                              fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 )
                               ],

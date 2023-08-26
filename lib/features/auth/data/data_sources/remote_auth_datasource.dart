@@ -6,11 +6,11 @@ import 'package:strolls/features/auth/presentation/bloc/registration_event.dart'
 
 import '../models/send_registration_params_model.dart';
 
-class RemoteCitiesDatasource {
+class RemoteAuthDataSource {
   RetrofitClient retrofitClient;
   Dio dio;
 
-  RemoteCitiesDatasource({required this.retrofitClient, required this.dio});
+  RemoteAuthDataSource({required this.retrofitClient, required this.dio});
 
   Future<List<CityModel>> getCities() async {
     var response = await dio.get("/auth/cities");
@@ -47,6 +47,31 @@ class RemoteCitiesDatasource {
       "username" : username,
       "password" : pass,
     });
+    if (response.statusCode! >= 200 && response.statusCode! <= 300) {
+      return response.data;
+    } else {
+      throw MyServerException(message: response.data["errorMessage"] ?? "");
+    }
+  }
+
+  Future<dynamic> forgetPassword(String email) async {
+    var response = await dio.post("/auth/forget_password",data: {
+      "email" : email
+    });
+
+    if (response.statusCode! >= 200 && response.statusCode! <= 300) {
+      return response.data;
+    } else {
+      throw MyServerException(message: response.data["errorMessage"] ?? "");
+    }
+  }
+
+  Future<dynamic> confirmForgetPassword(String email,String token) async {
+    var response = await dio.post("/auth/confirm_forget_password",data: {
+      "email" : email,
+      "token" : token
+    });
+
     if (response.statusCode! >= 200 && response.statusCode! <= 300) {
       return response.data;
     } else {

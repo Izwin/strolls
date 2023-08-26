@@ -12,6 +12,7 @@ import 'package:strolls/features/home/presentation/pages/main_page.dart';
 import 'package:strolls/features/home/presentation/widgets/background_circle.dart';
 import 'package:strolls/features/home/presentation/widgets/background_with_circles.dart';
 
+import 'core/bloc/authenticator_state.dart';
 import 'core/getit/get_it.dart';
 
 class Authenticator extends StatelessWidget {

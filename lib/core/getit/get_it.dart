@@ -5,10 +5,12 @@ import 'package:strolls/core/bloc/authenticator_bloc.dart';
 import 'package:strolls/core/network/host_data.dart';
 import 'package:strolls/core/network/retrofit_client.dart';
 import 'package:strolls/core/network/token_interceptor.dart';
-import 'package:strolls/features/auth/data/data_sources/remote_cities_datasource.dart';
+import 'package:strolls/features/auth/data/data_sources/remote_auth_datasource.dart';
 import 'package:strolls/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:strolls/features/auth/domain/repositories/auth_repository.dart';
 import 'package:strolls/features/auth/domain/use_cases/auth_use_case.dart';
+import 'package:strolls/features/auth/domain/use_cases/confirm_forget_password_use_case.dart';
+import 'package:strolls/features/auth/domain/use_cases/forget_password_use_case.dart';
 import 'package:strolls/features/auth/domain/use_cases/get_cities_use_case.dart';
 import 'package:strolls/features/auth/domain/use_cases/get_languages_use_case.dart';
 import 'package:strolls/features/auth/domain/use_cases/send_register_use_case.dart';
@@ -68,8 +70,8 @@ void setup() {
 
   // Datasource
 
-  getIt.registerSingleton<RemoteCitiesDatasource>(
-      RemoteCitiesDatasource(retrofitClient: getIt(), dio: getIt()));
+  getIt.registerSingleton<RemoteAuthDataSource>(
+      RemoteAuthDataSource(retrofitClient: getIt(), dio: getIt()));
 
   getIt.registerSingleton<RemoteUsersDatasource>(
       RemoteUsersDatasource(retrofitClient: getIt(), dio: getIt()));
@@ -85,7 +87,7 @@ void setup() {
   // Repository
 
   getIt.registerSingleton<AuthRepository>(
-      AuthRepositoryImpl(remoteCitiesDatasource: getIt()));
+      AuthRepositoryImpl(remoteAuthDataSource: getIt()));
 
   getIt.registerSingleton<UserRepository>(
       UsersRepositoryImpl(remoteUsersDataSource: getIt()));
@@ -139,6 +141,9 @@ void setup() {
   getIt.registerSingleton(RequestStrollUseCase(strollsRepository: getIt()));
 
   getIt.registerSingleton(UploadProfileImageUseCase(userRepository: getIt()));
+  getIt
+      .registerSingleton(ConfirmForgetPasswordUseCase(authRepository: getIt()));
+  getIt.registerSingleton(ForgetPasswordUseCase(authRepository: getIt()));
 
   getIt.registerSingleton(GetStrollRequestsUseCase(strollsRepository: getIt()));
 
@@ -170,6 +175,8 @@ void setup() {
   getIt.registerSingleton(AuthenticatorBloc(
       sendRegisterUseCase: getIt(),
       getProfileUseCase: getIt(),
+      confirmForgetPasswordUseCase: getIt(),
+      forgetPasswordUseCase: getIt(),
       authUseCase: getIt()));
 
   getIt.registerFactory(() => ProfileBloc(

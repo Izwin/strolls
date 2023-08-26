@@ -13,4 +13,10 @@ abstract class AuthRepository {
   Future<Either<Failure, void>> register(SendRegistrationParamsModel sendRegistrationParams);
 
   Future<Either<Failure, void>> auth(String username,String pass);
+
+  Future<Either<Failure,void>> forgetPassword(String email);
+
+  Future<Either<Failure,void>> confirmForgetPassword(String email,String token);
+
+  Future<Either<Failure,void>> changePassword(String password);
 }

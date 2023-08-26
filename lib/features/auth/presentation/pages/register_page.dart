@@ -22,6 +22,8 @@ import 'package:strolls/features/auth/presentation/widgets/gradient_text_field.d
 import 'package:strolls/features/home/presentation/widgets/white_button.dart';
 import 'package:strolls/features/profile/domain/use_cases/get_users_use_case.dart';
 
+import '../../../../core/bloc/authenticator_event.dart';
+import '../../../../core/bloc/authenticator_state.dart';
 import '../../data/models/send_registration_params_model.dart';
 import '../bloc/registration_state.dart';
 

@@ -1,6 +1,6 @@
-part of 'authenticator_bloc.dart';
 
-@immutable
+import '../../features/profile/domain/entities/user_entity.dart';
+
 abstract class AuthenticatorState {}
 
 class AuthenticatorInitial extends AuthenticatorState {}
@@ -24,8 +24,19 @@ class AuthenticatorError extends AuthenticatorState {
   AuthenticatorError({required this.errorMessage});
 }
 
+
+class ForgetPasswordError extends AuthenticatorState {
+  final String errorMessage;
+
+  ForgetPasswordError({required this.errorMessage});
+}
+
 class AuthenticatorDialog extends AuthenticatorState {
   final String message;
 
   AuthenticatorDialog({required this.message});
 }
+
+class ForgetPasswordTokenSentState extends AuthenticatorState{}
+
+class SuccessConfirmForgetPasswordState extends AuthenticatorState{}

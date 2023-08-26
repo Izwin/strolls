@@ -9,26 +9,38 @@ import 'package:strolls/features/profile/domain/entities/user_entity.dart';
 import 'package:strolls/features/profile/domain/use_cases/get_profile_use_case.dart';
 
 import '../../features/auth/data/models/send_registration_params_model.dart';
+import '../../features/auth/domain/use_cases/confirm_forget_password_use_case.dart';
+import '../../features/auth/domain/use_cases/forget_password_use_case.dart';
 import '../../features/auth/domain/use_cases/get_cities_use_case.dart';
 import '../../features/auth/domain/use_cases/send_register_use_case.dart';
-
-
-part 'authenticator_event.dart';
-part 'authenticator_state.dart';
+import 'authenticator_event.dart';
+import 'authenticator_event.dart';
+import 'authenticator_state.dart';
 
 class AuthenticatorBloc extends Bloc<AuthenticatorEvent, AuthenticatorState> {
   GetProfileUseCase getProfileUseCase;
   SendRegisterUseCase sendRegisterUseCase;
   AuthUseCase authUseCase;
+  ForgetPasswordUseCase forgetPasswordUseCase;
+  ConfirmForgetPasswordUseCase confirmForgetPasswordUseCase;
 
-  AuthenticatorBloc({required this.sendRegisterUseCase,required this.authUseCase,required this.getProfileUseCase}) : super(AuthenticatorInitial()) {
+  AuthenticatorBloc(
+      {required this.sendRegisterUseCase,
+      required this.authUseCase,
+      required this.getProfileUseCase,
+      required this.confirmForgetPasswordUseCase,
+      required this.forgetPasswordUseCase})
+      : super(AuthenticatorInitial()) {
     on<AuthenticatorStartEvent>(_onAuthenticatorStartEvent);
     on<SendRegistrationEvent>(_onSendRegistrationEvent);
     on<GetProfileAuthenticatorEvent>(_onGetProfileEvent);
     on<SendAuthEvent>(_onSendAuthEvent);
+    on<ForgetPasswordEvent>(_onForgetPasswordEvent);
+    on<ConfirmForgetPasswordEvent>(_onConfirmForgetPasswordEvent);
   }
 
-  void _onAuthenticatorStartEvent(AuthenticatorStartEvent event,Emitter emitter){
+  void _onAuthenticatorStartEvent(
+      AuthenticatorStartEvent event, Emitter emitter) {
     emit(AuthenticatorInitial());
   }
 
@@ -38,20 +50,17 @@ class AuthenticatorBloc extends Bloc<AuthenticatorEvent, AuthenticatorState> {
     var result = await sendRegisterUseCase(event.params);
     result.fold((l) {
       emit(AuthenticatorError(errorMessage: l.message));
-
     }, (r) {
       emit(AuthenticatorDialog(message: "Success registration"));
       emit(AuthorizedState());
     });
   }
 
-  Future<void> _onSendAuthEvent(
-      SendAuthEvent event, Emitter emitter) async {
+  Future<void> _onSendAuthEvent(SendAuthEvent event, Emitter emitter) async {
     emit(AuthenticatorLoading());
-    var result = await authUseCase(event.username,event.password);
+    var result = await authUseCase(event.username, event.password);
     result.fold((l) {
       emit(AuthenticatorError(errorMessage: l.message));
-
     }, (r) {
       emit(AuthenticatorDialog(message: "Success auth"));
       emit(AuthorizedState());
@@ -71,6 +80,26 @@ class AuthenticatorBloc extends Bloc<AuthenticatorEvent, AuthenticatorState> {
       Get.put(r);
 
       emit(AuthorizedState().copyWith(userEntity: r));
+    });
+  }
+
+  Future<void> _onForgetPasswordEvent(
+      ForgetPasswordEvent event, Emitter emitter) async {
+    var result = await forgetPasswordUseCase(event.email);
+    result.fold((l) {
+      emit(ForgetPasswordError(errorMessage: l.message));
+    }, (r) {
+      emit(ForgetPasswordTokenSentState());
+    });
+  }
+
+  Future<void> _onConfirmForgetPasswordEvent(
+      ConfirmForgetPasswordEvent event, Emitter emitter) async {
+    var result = await confirmForgetPasswordUseCase(event.email,event.token);
+    result.fold((l) {
+      emit(ForgetPasswordError(errorMessage: l.message));
+    }, (r) {
+      emit(SuccessConfirmForgetPasswordState());
     });
   }
 }

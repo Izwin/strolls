@@ -19,6 +19,7 @@ import 'package:strolls/features/home/presentation/widgets/gradient_nav_bar.dart
 import 'package:strolls/features/home/presentation/widgets/stroll_item.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import 'core/bloc/authenticator_event.dart';
 import 'features/home/presentation/pages/main_page.dart';
 
 Future<void> main() async {

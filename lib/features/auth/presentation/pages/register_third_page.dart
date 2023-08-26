@@ -5,6 +5,7 @@ import 'package:strolls/core/getit/get_it.dart';
 import 'package:strolls/core/utills/dialog_utils.dart';
 import 'package:strolls/features/profile/domain/use_cases/get_users_use_case.dart';
 
+import '../../../../core/bloc/authenticator_state.dart';
 import '../../../home/presentation/widgets/glass_container.dart';
 import '../bloc/registration_bloc.dart';
 import '../bloc/registration_state.dart';
