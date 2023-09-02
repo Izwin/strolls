@@ -9,6 +9,7 @@ import 'package:strolls/features/auth/data/data_sources/remote_auth_datasource.d
 import 'package:strolls/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:strolls/features/auth/domain/repositories/auth_repository.dart';
 import 'package:strolls/features/auth/domain/use_cases/auth_use_case.dart';
+import 'package:strolls/features/auth/domain/use_cases/change_password_use_case.dart';
 import 'package:strolls/features/auth/domain/use_cases/confirm_forget_password_use_case.dart';
 import 'package:strolls/features/auth/domain/use_cases/forget_password_use_case.dart';
 import 'package:strolls/features/auth/domain/use_cases/get_cities_use_case.dart';
@@ -28,6 +29,7 @@ import 'package:strolls/features/home/domain/use_cases/accept_stroll_request_use
 import 'package:strolls/features/home/domain/use_cases/create_stroll_use_case.dart';
 import 'package:strolls/features/home/domain/use_cases/get_stroll_by_id_use_case.dart';
 import 'package:strolls/features/home/domain/use_cases/get_stroll_requests_use_case.dart';
+import 'package:strolls/features/home/domain/use_cases/get_strolls_by_page_use_case.dart';
 import 'package:strolls/features/home/domain/use_cases/get_strolls_by_user_id_use_case.dart';
 import 'package:strolls/features/home/domain/use_cases/get_strolls_use_case.dart';
 import 'package:strolls/features/home/domain/use_cases/request_stroll_use_case.dart';
@@ -146,6 +148,7 @@ void setup() {
   getIt.registerSingleton(ForgetPasswordUseCase(authRepository: getIt()));
 
   getIt.registerSingleton(GetStrollRequestsUseCase(strollsRepository: getIt()));
+  getIt.registerSingleton(ChangePasswordUseCase(authRepository: getIt()));
 
   getIt.registerSingleton(
       AcceptStrollRequestUseCase(strollsRepository: getIt()));
@@ -167,6 +170,8 @@ void setup() {
 
   getIt.registerSingleton(GetMessagesUseCase(chatRepository: getIt()));
 
+  getIt.registerSingleton(GetStrollsByPageUseCase(strollsRepository: getIt()));
+
   // Bloc
 
   getIt.registerFactory(() => RegistrationBloc(
@@ -177,11 +182,15 @@ void setup() {
       getProfileUseCase: getIt(),
       confirmForgetPasswordUseCase: getIt(),
       forgetPasswordUseCase: getIt(),
+      changePasswordUseCase: getIt(), 
       authUseCase: getIt()));
 
   getIt.registerFactory(() => ProfileBloc(
       getProfileUseCase: getIt(),
       getProfileStrollsUseCase: getIt(),
+      getMyFriendshipRequestsUseCase: getIt(),
+      getSentFriendshipRequestsUseCase: getIt(),
+      getStrollsByUserIdUseCase: getIt(),
       getProfileByIdUseCase: getIt()));
 
   getIt.registerFactory(() => FriendsBloc(
@@ -199,6 +208,7 @@ void setup() {
   getIt.registerFactory(() => StrollsBloc(
       getStrollsUseCase: getIt(),
       createStrollUseCase: getIt(),
+      getStrollsByPageUseCase: getIt(),
       getStrollsByUserIdUseCase: getIt()));
 
   getIt.registerFactory(() => StrollSingleBloc(

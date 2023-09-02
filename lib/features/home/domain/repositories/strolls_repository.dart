@@ -9,6 +9,8 @@ import '../params/create_strolls_params.dart';
 abstract class StrollsRepository {
   Future<Either<Failure, List<StrollEntity>>> getStrolls();
 
+  Future<Either<Failure, List<StrollEntity>>> getStrollsByPage(int page,int size);
+
   Future<Either<Failure, void>> createStroll({
     required CreateStrollParams createStrollParams
   });

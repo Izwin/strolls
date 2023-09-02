@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:strolls/authenticator.dart';
 import 'package:strolls/core/getit/get_it.dart';
 import 'package:strolls/core/widgets/gradient_scaffold.dart';
@@ -33,64 +34,66 @@ class MyProfilePage extends StatelessWidget {
 
   List<Type> buildWhenForStrolls = [
     GotProfileStrollsState,
-    ProfileStrollsLoadingState,
     ProfileErrorState
   ];
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<ProfileBloc>()
-        ..add(GetProfileEvent())
-        ..add(GetProfileStrollsEvent()),
+      create: (context) =>
+      getIt<ProfileBloc>()
+        ..add(GetMyProfileData()),
       child: GradientScaffold(
         child: SingleChildScrollView(
           child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildAppBar(),
-                SizedBox(
-                  height: 20,
-                ),
-                BlocBuilder<ProfileBloc, ProfileState>(
-                  buildWhen: (p, s) =>
-                      buildWhenForProfile.contains(s.runtimeType),
-                  builder: (context, state) {
-                    if (state is GotProfileState) {
-                      return GradientMyUserContainer(userEntity: state.userEntity);
-                    } else if (state is ProfileLoadingState) {
-                      return Center(
-                        child: CupertinoActivityIndicator(),
-                      );
-                    } else if (state is ProfileErrorState) {
-                      return Center(
-                        child: Text(state.message),
-                      );
-                    }
-                    return Center();
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 10,
+            child: BlocBuilder<ProfileBloc, ProfileState>(
+              builder: (context, state) {
+                if(state is ProfileLoadingState){
+                  return Center(child:  CupertinoActivityIndicator(),);
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildAppBar(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    BlocBuilder<ProfileBloc, ProfileState>(
+                      builder: (context, state) {
+                        if (state is GotMyProfileDataState) {
+                          return GradientMyUserContainer(
+                              userEntity: state.userEntity);
+                        }
+                        else if (state is ProfileErrorState) {
+                          return Center(
+                            child: Text(state.message),
+                          );
+                        }
+                        return Center();
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "Strolls",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          _getStrolls()
+                        ],
                       ),
-                      Text(
-                        "Strolls",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      _getStrolls()
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -100,11 +103,29 @@ class MyProfilePage extends StatelessWidget {
 
   Widget _buildAppBar() {
     return BlocBuilder<ProfileBloc, ProfileState>(
-      buildWhen: (p, s) => buildWhenForProfile.contains(s.runtimeType),
       builder: (context, state) {
-        if (state is ProfileLoadingState) {
-          return Center(
-            child: CupertinoActivityIndicator(),
+        if (state is GotMyProfileDataState) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                height: 70,
+                child: TitleText(title: "Text"),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: Text(
+                  "@username",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Color(0xFFFFF3B7),
+                      height: 0.2,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700),
+                ),
+              )
+            ],
           );
         } else if (state is GotProfileState) {
           return Column(
@@ -137,10 +158,9 @@ class MyProfilePage extends StatelessWidget {
 
   Widget _getStrolls() {
     return BlocBuilder<ProfileBloc, ProfileState>(
-      buildWhen: (p, s) => buildWhenForStrolls.contains(s.runtimeType),
       builder: (context, state) {
         var userEntity = Get.find<UserEntity>();
-        if (state is GotProfileStrollsState) {
+        if (state is GotMyProfileDataState) {
           return ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {

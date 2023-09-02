@@ -1,6 +1,7 @@
 import 'package:date_field/date_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:strolls/features/home/presentation/widgets/glass_container.dart';
 
 class GradientDatePicker extends StatefulWidget {
@@ -25,8 +26,8 @@ class _GradientDatePickerState extends State<GradientDatePicker> {
   @override
   void initState() {
     if (widget.dateTime != null) {
-      controller.text =
-          "${widget.dateTime!.day}/${widget.dateTime!.month}/${widget.dateTime!.year}";
+      controller.text = Jiffy.parseFromDateTime(widget.dateTime!)
+          .format(pattern: "dd/MM//yyyy");
     }
     super.initState();
   }
@@ -56,8 +57,8 @@ class _GradientDatePickerState extends State<GradientDatePicker> {
                     onDateTimeChanged: (DateTime value) {
                       setState(() {
                         widget.onDateChanged.call(value);
-                        controller.text =
-                            "${value.day}/${value.month}/${value.year}";
+                        controller.text = Jiffy.parseFromDateTime(value!)
+                            .format(pattern: "dd/MM//yyyy");
                       });
                     },
                     mode: CupertinoDatePickerMode.date,
@@ -70,7 +71,7 @@ class _GradientDatePickerState extends State<GradientDatePicker> {
         minLines: null,
         controller: controller,
         textAlignVertical: TextAlignVertical.center,
-        style: const TextStyle(color: Colors.white, fontSize: 16, height: 1),
+        style: const TextStyle(color: Colors.white, fontSize: 14, height: 1),
         decoration: InputDecoration(
           fillColor: Colors.transparent,
           filled: true,

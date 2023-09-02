@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,150 +27,140 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthenticatorBloc, AuthenticatorState>(
-      listener: (context,state){
-        if(state is AuthenticatorError){
+      listener: (context, state) {
+        if (state is AuthenticatorError) {
           DialogUtils.showDialog(context, "Password or login error");
         }
       },
       builder: (context, state) {
         return GradientScaffold(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TitleText(title: "Sign in",),),
-                    Expanded(
-                      flex: 2,
-                      child: GlassContainer(
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 25.0, vertical: 5),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Container(
-                                        child: Center(
-                                          child: Text(
-                                            "Strolls",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 35,
-                                                fontWeight:
-                                                    FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        children: [
-                                          Expanded(
-                                            child: Align(
-                                              alignment:
-                                                  Alignment.topCenter,
-                                              child: GradientTextField(
-                                                label:
-                                                    "Username or email",
-                                                controller: username,
-                                                maxLines: 1,
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Align(
-                                              alignment: Alignment
-                                                  .bottomCenter,
-                                              child: GradientTextField(
-                                                label: "Password",
-                                                maxLines: 1,
-                                                controller: password,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Spacer(
-                                      flex: 2,
-                                    )
-                                  ],
-                                ),
-                                Positioned(
-                                  bottom: 25,
-                                  child: Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                              CupertinoPageRoute(
-                                                  builder: (context) {
-                                            return ForgetPasswordPage();
-                                          }));
-                                        },
-                                        child: Text(
-                                          "Forget Password",
-                                          style: TextStyle(
-                                              color: Colors.white
-                                                  .withOpacity(0.7),
-                                              fontSize: 16),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                              CupertinoPageRoute(
-                                                  builder: (context) {
-                                            return const RegisterPage();
-                                          }));
-                                        },
-                                        child: Text(
-                                          "I have not an account.",
-                                          style: TextStyle(
-                                              color: Colors.white
-                                                  .withOpacity(0.7),
-                                              fontSize: 16),
-                                        ),
-                                      ),
-                                    ],
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: TitleText(
+                title: "Sign in",
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: GlassContainer(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25.0, vertical: 5),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                child: Center(
+                                  child: Text(
+                                    "Strolls",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 35,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                )
-                              ],
+                                ),
+                              ),
                             ),
-                          ),
+                            Expanded(
+                              flex: 3,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child: GradientTextField(
+                                        label: "Username or email",
+                                        controller: username,
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: GradientTextField(
+                                        label: "Password",
+                                        maxLines: 1,
+                                        controller: password,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Spacer(
+                              flex: 2,
+                            )
+                          ],
                         ),
-                      ),
-                    ),
-                    Expanded(
-                        child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: WhiteButton(
-                                text: "Continue",
+                        Positioned(
+                          bottom: 25,
+                          child: Column(
+                            children: [
+                              GestureDetector(
                                 onTap: () {
-                                  _onContinuePressed(context);
-                                }))),
-                  ],
-
+                                  Navigator.of(context).push(
+                                      CupertinoPageRoute(builder: (context) {
+                                    return ForgetPasswordPage();
+                                  }));
+                                },
+                                child: Text(
+                                  "Forget Password",
+                                  style: TextStyle(
+                                      color: Colors.white.withOpacity(0.7),
+                                      fontSize: 16),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      CupertinoPageRoute(builder: (context) {
+                                    return const RegisterPage();
+                                  }));
+                                },
+                                child: Text(
+                                  "I have not an account.",
+                                  style: TextStyle(
+                                      color: Colors.white.withOpacity(0.7),
+                                      fontSize: 16),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+                child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: WhiteButton(
+                        text: "Continue",
+                        onTap: () {
+                          _onContinuePressed(context);
+                        }))),
+          ],
         ));
       },
     );
   }
 
-
-  void _onContinuePressed(BuildContext context){
-    context.read<AuthenticatorBloc>().add(
-        SendAuthEvent(
-            username: username.text,
-            password: password.text));
+  void _onContinuePressed(BuildContext context) async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    context.read<AuthenticatorBloc>().add(SendAuthEvent(
+        username: username.text, password: password.text, token: fcmToken!));
   }
 }

@@ -23,6 +23,20 @@ class RemoteStrollsDatasource {
     }
   }
 
+  Future<List<StrollModel>> getStrollsByPage(int page,int size) async {
+    var result = await dio.get("/strolls/get_page",queryParameters: {
+      "page" : page,
+      "size" : size
+    });
+    if (result.statusCode! >= 200 || result.statusCode! <= 300) {
+      var strolls =
+      (result.data as List).map((e) => StrollModel.fromJson(e)).toList();
+      return strolls;
+    } else {
+      throw MyServerException(message: result.data["errorMessage"]);
+    }
+  }
+
   Future<void> createStroll({
     required CreateStrollParams createStrollParams,
   }) async {

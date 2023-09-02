@@ -22,9 +22,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: Center(
-        child: _buildScreens().elementAt(_index),
-      ),
+      body: _buildScreens().elementAt(_index),
       floatingActionButton: SizedBox(
         width: 60,
         height: 60,

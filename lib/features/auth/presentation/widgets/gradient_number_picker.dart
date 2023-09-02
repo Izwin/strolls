@@ -61,7 +61,7 @@ class _GradientNumberPicker extends State<GradientNumberPicker> {
         minLines: null,
         controller: controller,
         textAlignVertical: TextAlignVertical.center,
-        style: const TextStyle(color: Colors.white, fontSize: 16, height: 1),
+        style: const TextStyle(color: Colors.white, fontSize: 14, height: 1),
         decoration: InputDecoration(
           fillColor: Colors.transparent,
           filled: true,

@@ -25,4 +25,23 @@ class GotProfileStrollsState extends ProfileState {
 
 class ProfileLoadingState extends ProfileState {}
 
-class ProfileStrollsLoadingState extends ProfileState {}
+class GotMyProfileDataState extends ProfileState {
+  final UserEntity userEntity;
+  final List<StrollEntity> strolls;
+
+  GotMyProfileDataState({required this.userEntity, required this.strolls});
+}
+
+class GotProfileDataState extends ProfileState {
+  final UserEntity userEntity;
+  final List<StrollEntity> strolls;
+  final List<FriendshipRequestEntity> myRequests;
+  final List<FriendshipRequestEntity> sentRequests;
+
+  GotProfileDataState(
+      {required this.userEntity,
+      required this.strolls,
+      required this.myRequests,
+      required this.sentRequests});
+}
+

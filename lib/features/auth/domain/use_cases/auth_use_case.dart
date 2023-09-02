@@ -9,7 +9,7 @@ class AuthUseCase{
   final AuthRepository authRepository;
   AuthUseCase({required this.authRepository});
 
-  Future<Either<Failure,void>> call(String username,String pass){
-    return authRepository.auth(username, pass);
+  Future<Either<Failure,void>> call(String username,String pass,String token){
+    return authRepository.auth(username, pass,token);
   }
 }

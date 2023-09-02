@@ -71,7 +71,7 @@ class GradientDropDown extends StatelessWidget {
                     hintText: label,
                     hintStyle: const TextStyle(
                         color: Color(0xFF8A8A8A),
-                        fontSize: 20,
+                        fontSize: 14,
                         height: 1,
                         fontWeight: FontWeight.w400),
                     contentPadding: const EdgeInsets.symmetric(
@@ -83,10 +83,10 @@ class GradientDropDown extends StatelessWidget {
             child: Container(),
           )),
           dropdownDecoratorProps: DropDownDecoratorProps(
-            baseStyle: TextStyle(color: Colors.white, fontSize: 20),
+            baseStyle: TextStyle(color: Colors.white, fontSize: 16),
             textAlignVertical: TextAlignVertical.center,
             dropdownSearchDecoration: InputDecoration(
-              hintStyle: TextStyle(color: Colors.white.withOpacity(0.4),fontSize: 20),
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.4),fontSize: 16),
               hintText: label,
               border: InputBorder.none,
               prefixIcon: null,

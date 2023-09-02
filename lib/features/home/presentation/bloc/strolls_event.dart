@@ -4,6 +4,13 @@ abstract class StrollsEvent {}
 
 class GetStrollsEvent extends StrollsEvent {}
 
+class GetStrollsByPageEvent extends StrollsEvent {
+  final int page;
+  final int size;
+
+  GetStrollsByPageEvent({required this.size,required this.page});
+}
+
 class GetStrollsByIdEvent extends StrollsEvent {
   final int id;
 

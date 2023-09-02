@@ -30,31 +30,38 @@ class TokenInterceptor extends Interceptor {
         super.onError(err, handler);
         return;
       }
-      var tokenResponse =
-          await dio.post("auth/refresh", data: {"refreshToken": someToken});
-      if (tokenResponse.statusCode == 200) {
-        String newToken = tokenResponse.data["accessToken"];
-        String refreshToken = tokenResponse.data["refreshToken"];
+      try{
+        var tokenResponse =
+        await dio.post("auth/refresh", data: {"refreshToken": someToken});
+        if (tokenResponse.statusCode == 200) {
+          String newToken = tokenResponse.data["accessToken"];
+          String refreshToken = tokenResponse.data["refreshToken"];
 
-        await prefs.setString("accessToken", newToken);
-        await prefs.setString("refreshToken", refreshToken);
-        if (newToken != null) {
-          RequestOptions options = err.requestOptions;
-          options.headers['Authorization'] = 'Bearer $newToken';
-          final opts = Options(
-            method: err.requestOptions.method,
-            headers: err.requestOptions.headers,
-          );
-          return handler.resolve(await dio.request(options.path,
-              options: opts, data: err!.requestOptions.data));
+          await prefs.setString("accessToken", newToken);
+          await prefs.setString("refreshToken", refreshToken);
+          if (newToken != null) {
+            RequestOptions options = err.requestOptions;
+            options.headers['Authorization'] = 'Bearer $newToken';
+            final opts = Options(
+              method: err.requestOptions.method,
+              headers: err.requestOptions.headers,
+            );
+            return handler.resolve(await dio.request(options.path,
+                options: opts, data: err!.requestOptions.data));
+          } else {
+            super.onError(err, handler);
+            return;
+          }
         } else {
           super.onError(err, handler);
           return;
         }
-      } else {
+      }
+      catch (e){
         super.onError(err, handler);
         return;
       }
+
     }
     super.onError(err, handler);
   }

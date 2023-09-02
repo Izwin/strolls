@@ -14,6 +14,7 @@ class SendRegistrationParamsModel{
   final String bio;
   final List<String> languages;
   final String city;
+  final String token;
 
   SendRegistrationParamsModel({
     required this.city,
@@ -26,6 +27,7 @@ class SendRegistrationParamsModel{
     required this.username,
     required this.gender,
     required this.password,
+    required this.token
   });
 
   factory SendRegistrationParamsModel.fromJson(Map<String, dynamic> json) => _$SendRegistrationParamsModelFromJson(json);

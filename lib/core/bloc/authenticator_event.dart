@@ -15,8 +15,9 @@ class SendRegistrationEvent extends AuthenticatorEvent {
 class SendAuthEvent extends AuthenticatorEvent {
   final String username;
   final String password;
+  final String token;
 
-  SendAuthEvent({required this.username, required this.password});
+  SendAuthEvent({required this.username, required this.password,required this.token});
 }
 
 class ForgetPasswordEvent extends AuthenticatorEvent {
@@ -30,4 +31,13 @@ class ConfirmForgetPasswordEvent extends AuthenticatorEvent {
   final String token;
 
   ConfirmForgetPasswordEvent({required this.email, required this.token});
+}
+
+class ChangePasswordEvent extends AuthenticatorEvent {
+  final String email;
+  final String token;
+  final String password;
+
+  ChangePasswordEvent(
+      {required this.password, required this.email, required this.token});
 }

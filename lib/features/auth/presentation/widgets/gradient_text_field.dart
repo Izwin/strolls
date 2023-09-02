@@ -18,23 +18,25 @@ class GradientTextField extends StatelessWidget {
         end: const Alignment(0, 1),
         colors: [Colors.black.withOpacity(0.5), const Color(0xFF050005).withOpacity(0.5)],
       ),
-      child: TextField(
-        minLines: minLines,
-        maxLines: maxLines,
-        expands: maxLines == null ? true : false,
-        controller: controller,
-        textAlignVertical: TextAlignVertical.center,
-        style: const TextStyle(color: Colors.white,fontSize: 20,height:1),
-        decoration: InputDecoration(
-          fillColor: Colors.transparent,
-          label: label != null ? Text(label!,style: TextStyle(color: Colors.white.withOpacity(0.4)),) : null,
-          filled: true,
-          floatingLabelStyle: TextStyle(fontSize: 16,height: 1),
-          border: InputBorder.none,
-          hintStyle: TextStyle(color: Colors.white.withOpacity(0.6),fontSize: 20,height: 1,fontWeight: FontWeight.w400),
-          contentPadding: const EdgeInsets.symmetric(vertical:10.0,horizontal: 35),
+      child: Center(
+        child: TextField(
+          minLines: minLines,
+          maxLines: maxLines,
+          expands: maxLines == null ? true : false,
+          controller: controller,
+          textAlignVertical: TextAlignVertical.center,
+          style: const TextStyle(color: Colors.white,fontSize: 16,height:1),
+          decoration: InputDecoration(
+            fillColor: Colors.transparent,
+            label: label != null ? Text(label!,style: TextStyle(color: Colors.white.withOpacity(0.4)),) : null,
+            filled: true,
+            floatingLabelStyle: TextStyle(fontSize: 14,height: 1),
+            border: InputBorder.none,
+            hintStyle: TextStyle(color: Colors.white.withOpacity(0.6),fontSize: 20,height: 1,fontWeight: FontWeight.w400),
+            contentPadding: const EdgeInsets.symmetric(vertical:10.0,horizontal: 35),
 
 
+          ),
         ),
       ),
     );

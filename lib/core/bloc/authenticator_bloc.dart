@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:meta/meta.dart';
 import 'package:strolls/features/auth/domain/use_cases/auth_use_case.dart';
+import 'package:strolls/features/auth/domain/use_cases/change_password_use_case.dart';
 import 'package:strolls/features/profile/domain/entities/user_entity.dart';
 import 'package:strolls/features/profile/domain/use_cases/get_profile_use_case.dart';
 
@@ -23,12 +24,14 @@ class AuthenticatorBloc extends Bloc<AuthenticatorEvent, AuthenticatorState> {
   AuthUseCase authUseCase;
   ForgetPasswordUseCase forgetPasswordUseCase;
   ConfirmForgetPasswordUseCase confirmForgetPasswordUseCase;
+  ChangePasswordUseCase changePasswordUseCase;
 
   AuthenticatorBloc(
       {required this.sendRegisterUseCase,
       required this.authUseCase,
       required this.getProfileUseCase,
       required this.confirmForgetPasswordUseCase,
+      required this.changePasswordUseCase,
       required this.forgetPasswordUseCase})
       : super(AuthenticatorInitial()) {
     on<AuthenticatorStartEvent>(_onAuthenticatorStartEvent);
@@ -37,6 +40,7 @@ class AuthenticatorBloc extends Bloc<AuthenticatorEvent, AuthenticatorState> {
     on<SendAuthEvent>(_onSendAuthEvent);
     on<ForgetPasswordEvent>(_onForgetPasswordEvent);
     on<ConfirmForgetPasswordEvent>(_onConfirmForgetPasswordEvent);
+    on<ChangePasswordEvent>(_onChangePasswordPasswordEvent);
   }
 
   void _onAuthenticatorStartEvent(
@@ -58,7 +62,7 @@ class AuthenticatorBloc extends Bloc<AuthenticatorEvent, AuthenticatorState> {
 
   Future<void> _onSendAuthEvent(SendAuthEvent event, Emitter emitter) async {
     emit(AuthenticatorLoading());
-    var result = await authUseCase(event.username, event.password);
+    var result = await authUseCase(event.username, event.password,event.token);
     result.fold((l) {
       emit(AuthenticatorError(errorMessage: l.message));
     }, (r) {
@@ -100,6 +104,16 @@ class AuthenticatorBloc extends Bloc<AuthenticatorEvent, AuthenticatorState> {
       emit(ForgetPasswordError(errorMessage: l.message));
     }, (r) {
       emit(SuccessConfirmForgetPasswordState());
+    });
+  }
+
+  Future<void> _onChangePasswordPasswordEvent(
+      ChangePasswordEvent event, Emitter emitter) async {
+    var result = await changePasswordUseCase(event.email,event.token,event.password);
+    result.fold((l) {
+      emit(ForgetPasswordError(errorMessage: l.message));
+    }, (r) {
+      emit(SuccessChangedPasswordState());
     });
   }
 }

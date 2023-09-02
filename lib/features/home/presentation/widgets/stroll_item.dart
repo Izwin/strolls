@@ -5,12 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:strolls/features/home/domain/entities/stroll_entity.dart';
 import 'package:strolls/features/home/presentation/pages/stroll_info_creator_page.dart';
 import 'package:strolls/features/home/presentation/pages/stroll_info_member_page.dart';
 import 'package:strolls/features/home/presentation/pages/stroll_info_page.dart';
 import 'package:strolls/features/home/presentation/widgets/glass_container.dart';
 import 'package:strolls/features/home/presentation/widgets/key_value_title.dart';
+import 'package:strolls/features/home/presentation/widgets/round_avatar_widger.dart';
 
 class StrollItem extends StatelessWidget {
   StrollItem({required this.profileId, required this.strollEntity, Key? key})
@@ -70,7 +72,8 @@ class StrollItem extends StatelessWidget {
                         width: 10,
                       ),
                       Text(
-                        "${strollEntity.date.day}/${strollEntity.date.month}",
+                        Jiffy.parseFromDateTime(strollEntity.date!.toLocal())
+                            .format(pattern: "dd/MM"),
                         style: TextStyle(
                             fontSize: 14,
                             color: Colors.white.withOpacity(0.9),
@@ -80,7 +83,8 @@ class StrollItem extends StatelessWidget {
                         width: 2,
                       ),
                       Text(
-                        "${strollEntity.date.hour}:${strollEntity.date.minute}",
+                        Jiffy.parseFromDateTime(strollEntity.date.toLocal())
+                            .format(pattern: "hh:mm"),
                         style: TextStyle(
                             fontSize: 14,
                             color: Colors.white.withOpacity(0.9),
@@ -128,27 +132,7 @@ class StrollItem extends StatelessWidget {
                               child: Transform.translate(
                                 offset: Offset(
                                     (strollEntity.members.length - c) * 13, 0),
-                                child: Container(
-                                  width: 45,
-                                  height: 45,
-                                  child: ClipOval(
-                                    child: Image.network(
-                                      strollEntity.members[c].avatarUrl,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      begin: Alignment(0.00, -1.00),
-                                      end: Alignment(0, 1),
-                                      colors: [
-                                        Color(0xFFBFF8FF),
-                                        Color(0xFF55CCFF)
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                child: RoundAvatarWidget(userEntity: strollEntity.members[c],size: 45,),
                               ),
                             );
                           }),

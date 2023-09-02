@@ -10,6 +10,7 @@ import 'package:strolls/features/profile/presentation/widgets/gradient_user_cont
 import '../../../../core/bloc/authenticator_bloc.dart';
 import '../../../../core/getit/get_it.dart';
 import '../../../../core/widgets/title_text.dart';
+import '../../../home/domain/entities/stroll_entity.dart';
 import '../../../home/presentation/bloc/strolls_bloc.dart';
 import '../../../home/presentation/widgets/background_with_circles.dart';
 import '../../../home/presentation/widgets/glass_container.dart';
@@ -32,90 +33,75 @@ class ProfilePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => getIt<ProfileBloc>()
-            ..add(GetProfileEvent())
-            ..add(GetProfileByIdEvent(id: userId)),
-        ),
-        BlocProvider(
           create: (context) =>
-              getIt<FriendsBloc>()..add(GetFriendshipRequestEvent()),
+              getIt<ProfileBloc>()..add(GetProfileByIdDataEvent(id: userId)),
         ),
       ],
       child: GradientScaffold(
         child: SingleChildScrollView(
-          child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildAppBar(),
-                const SizedBox(
-                  height: 20,
-                ),
-                BlocBuilder<ProfileBloc, ProfileState>(
-                  builder: (context, state) {
-                    if (state is GotProfileState) {
-                      return GradientUserContainer(
-                        userEntity: state.userEntity,
-                      );
-                    } else if (state is ProfileLoadingState) {
-                      return const Center(
-                        child: CupertinoActivityIndicator(),
-                      );
-                    } else if (state is ProfileErrorState) {
-                      return Center(
-                        child: Text(state.message),
-                      );
-                    }
-                    return const Center();
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 10,
+          child: BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              if (state is ProfileLoadingState) {
+                return Center(
+                  child: CupertinoActivityIndicator(),
+                );
+              }
+              else if (state is GotProfileDataState) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildAppBar(state.userEntity),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    GradientUserContainer(
+                      userEntity: state.userEntity,
+                      myFriendshipRequests: state.myRequests,
+                      sentFriendshipRequests: state.sentRequests,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text(
+                            "Strolls",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          _getStrolls(state.strolls)
+                        ],
                       ),
-                      const Text(
-                        "Strolls",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      _getStrolls()
-                    ],
-                  ),
-                ),
-              ],
-            ),
+                    ),
+                  ],
+                );
+              }
+              return Center();
+            },
           ),
         ),
       ),
     );
   }
 
-  Widget _buildAppBar() {
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      builder: (context, state) {
-        if (state is ProfileLoadingState) {
-          return const Center(
-            child: CupertinoActivityIndicator(),
-          );
-        } else if (state is GotProfileState) {
-          return Column(
+  Widget _buildAppBar(UserEntity userEntity) {
+    return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
                 height: 70,
-                child: TitleText(title: state.userEntity.firstname),
+                child: TitleText(title: userEntity.firstname),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 4),
                 child: Text(
-                  "@${state.userEntity.username}",
+                  "@${userEntity.username}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       color: Color(0xFFFFF3B7),
@@ -126,46 +112,27 @@ class ProfilePage extends StatelessWidget {
               )
             ],
           );
-        }
-        return const Center();
-      },
-    );
   }
 
-  Widget _getStrolls() {
-    return BlocProvider(
-      create: (context) =>
-          getIt<StrollsBloc>()..add(GetStrollsByIdEvent(id: userId)),
-      child: BlocBuilder<StrollsBloc, StrollsState>(
-        builder: (context, state) {
-          print(getIt<AuthenticatorBloc>().state.runtimeType);
-          var userEntity = Get.find<UserEntity>();
-          if (state is GotStrollsState) {
-            return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    StrollItem(
-                      strollEntity: state.strolls[index],
-                      profileId: userEntity!.id,
-                    ),
-                  ],
-                );
-              },
-              itemCount: state.strolls.length,
-              shrinkWrap: true,
-            );
-          } else {
-            return Center(
-              child: Text(state.runtimeType.toString()),
-            );
-          }
-        },
-      ),
-    );
+  Widget _getStrolls(List<StrollEntity> strolls) {
+        var userEntity = Get.find<UserEntity>();
+          return ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  StrollItem(
+                    strollEntity: strolls[index],
+                    profileId: userEntity!.id,
+                  ),
+                ],
+              );
+            },
+            itemCount: strolls.length,
+            shrinkWrap: true,
+          );
   }
 }

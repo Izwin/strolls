@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -168,7 +169,8 @@ class _RegisterPageState extends State<RegisterPage> {
     return false;
   }
 
-  void onContinuePressed(BuildContext context) {
+  Future<void> onContinuePressed(BuildContext context) async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
     var authenticatorBloc = getIt<AuthenticatorBloc>();
     if (hasErrors()) {
       DialogUtils.showDialog(context, "Please, fill all fields");
@@ -190,6 +192,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 bio: bioController.text,
                 gender: gender!.toUpperCase(),
                 dateOfBirth: date!,
+                token: fcmToken!,
                 username: usernameController.text,
                 password: passwordController.text)),
       );

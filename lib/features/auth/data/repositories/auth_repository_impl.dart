@@ -52,9 +52,9 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> auth(String username, String pass) async {
+  Future<Either<Failure, void>> auth(String username, String pass,String fcmToken) async {
     try {
-      var result = await remoteAuthDataSource.auth(username, pass);
+      var result = await remoteAuthDataSource.auth(username, pass,fcmToken);
       var prefs = await SharedPreferences.getInstance();
       await prefs.setString("accessToken", result["accessToken"]);
       await prefs.setString("refreshToken", result["refreshToken"]);
@@ -80,6 +80,18 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       var result =
           await remoteAuthDataSource.confirmForgetPassword(email, token);
+      return Right(result);
+    } on Exception catch (e) {
+      return Left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> changePassword(
+      String email, String token, String password) async {
+    try {
+      var result =
+          await remoteAuthDataSource.changePassword(email, token, password);
       return Right(result);
     } on Exception catch (e) {
       return Left(Failure(message: e.toString()));

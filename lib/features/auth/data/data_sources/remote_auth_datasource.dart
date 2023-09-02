@@ -42,10 +42,11 @@ class RemoteAuthDataSource {
     }
   }
 
-  Future<dynamic> auth(String username,String pass) async {
+  Future<dynamic> auth(String username,String pass,String fcmToken) async {
     var response = await dio.post("/auth/auth",data: {
       "username" : username,
       "password" : pass,
+      "token" : fcmToken,
     });
     if (response.statusCode! >= 200 && response.statusCode! <= 300) {
       return response.data;
@@ -70,6 +71,20 @@ class RemoteAuthDataSource {
     var response = await dio.post("/auth/confirm_forget_password",data: {
       "email" : email,
       "token" : token
+    });
+
+    if (response.statusCode! >= 200 && response.statusCode! <= 300) {
+      return response.data;
+    } else {
+      throw MyServerException(message: response.data["errorMessage"] ?? "");
+    }
+  }
+
+  Future<dynamic> changePassword(String email,String token,String password) async {
+    var response = await dio.post("/auth/change_password",data: {
+      "email" : email,
+      "token" : token,
+      "password" : password
     });
 
     if (response.statusCode! >= 200 && response.statusCode! <= 300) {

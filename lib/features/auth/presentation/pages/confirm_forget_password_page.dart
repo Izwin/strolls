@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:strolls/features/auth/presentation/pages/change_password_page.dart';
 
 import '../../../../core/bloc/authenticator_bloc.dart';
 import '../../../../core/bloc/authenticator_event.dart';
@@ -25,9 +26,9 @@ class ConfirmForgetPasswordPage extends StatelessWidget {
         if(state is ForgetPasswordError){
           DialogUtils.showDialog(context, "Error");
         }
-        else if(state is ForgetPasswordTokenSentState){
+        else if(state is SuccessConfirmForgetPasswordState){
           Navigator.push(context, CupertinoDialogRoute(context: context, builder: (context){
-            return LoginPage();
+            return ChangePasswordPage(email: email,token: token.text,);
           }));
         }
       },
@@ -36,7 +37,7 @@ class ConfirmForgetPasswordPage extends StatelessWidget {
             children: [
               Expanded(
                 child: TitleText(
-                  title: "Forget Password",
+                  title: "Enter code",
                 ),
               ),
               Expanded(
@@ -57,7 +58,7 @@ class ConfirmForgetPasswordPage extends StatelessWidget {
                                 flex: 2,
                                 child: Center(
                                   child: Text(
-                                    "Enter email for password recovery",
+                                    "Enter code from email!",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Colors.white,

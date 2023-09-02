@@ -8,11 +8,13 @@ import 'package:strolls/features/auth/presentation/widgets/gradient_text_field.d
 import 'package:strolls/features/chat/presentation/bloc/chats_bloc.dart';
 import 'package:strolls/features/home/presentation/widgets/glass_container.dart';
 import 'package:strolls/features/profile/domain/entities/user_entity.dart';
+import 'package:strolls/features/profile/presentation/pages/profile_page.dart';
 
 import '../../../../core/getit/get_it.dart';
 import '../../../../core/widgets/title_text.dart';
 import '../../../home/presentation/bloc/stroll_single/stroll_single_bloc.dart';
 import '../../../home/presentation/widgets/background_with_circles.dart';
+import '../../../home/presentation/widgets/round_avatar_widger.dart';
 import '../../domain/entities/message_entity.dart';
 import '../widgets/message_item_widget.dart';
 import '../widgets/my_message_item_widget.dart';
@@ -30,6 +32,7 @@ class _StrollChatPageState extends State<StrollChatPage> {
   List<MessageEntity> messages = [];
   ScrollController scrollController = ScrollController();
   TextEditingController textEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -81,36 +84,24 @@ class _StrollChatPageState extends State<StrollChatPage> {
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
                               itemBuilder: (i, c) {
-                                return Row(
-                                  children: [
-                                    Center(
-                                      child: Container(
-                                        width: 70,
-                                        height: 70,
-                                        child: ClipOval(
-                                          child: Image.network(
-                                            state.strollEntity.members[c]
-                                                .avatarUrl,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          gradient: LinearGradient(
-                                            begin: Alignment(0.00, -1.00),
-                                            end: Alignment(0, 1),
-                                            colors: [
-                                              Color(0xFFBFF8FF),
-                                              Color(0xFF55CCFF)
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    )
-                                  ],
+                                return Center(
+                                  child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            CupertinoDialogRoute(
+                                                builder: (context) {
+                                                  return ProfilePage(
+                                                      userId: state.strollEntity
+                                                          .members[c].id);
+                                                },
+                                                context: context));
+                                      },
+                                      child: RoundAvatarWidget(
+                                        userEntity: state
+                                            .strollEntity.members[c],
+                                        size: 65,
+                                      )),
                                 );
                               }),
                         ),
@@ -135,7 +126,8 @@ class _StrollChatPageState extends State<StrollChatPage> {
                                           scrollController.animateTo(
                                               scrollController
                                                   .position.maxScrollExtent,
-                                              duration: Duration(milliseconds: 200),
+                                              duration:
+                                                  Duration(milliseconds: 200),
                                               curve: Curves.linear);
                                         });
                                       } else if (state is GotNewMessageState) {
@@ -147,7 +139,8 @@ class _StrollChatPageState extends State<StrollChatPage> {
                                           scrollController.animateTo(
                                               scrollController
                                                   .position.maxScrollExtent,
-                                              duration: Duration(milliseconds: 200),
+                                              duration:
+                                                  Duration(milliseconds: 200),
                                               curve: Curves.linear);
                                         });
                                       }
@@ -181,7 +174,9 @@ class _StrollChatPageState extends State<StrollChatPage> {
                                         onPressed: () {
                                           context.read<ChatsBloc>().add(
                                               SendMessageEvent(
-                                                  message: textEditingController.text.trim(),
+                                                  message: textEditingController
+                                                      .text
+                                                      .trim(),
                                                   strollId: widget.strollId));
                                           textEditingController.clear();
                                         },

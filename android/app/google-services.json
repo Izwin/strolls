@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "455669201430",
+    "project_id": "strolls-ff2c8",
+    "storage_bucket": "strolls-ff2c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:455669201430:android:378f3117ee4e7f8e75d337",
+        "android_client_info": {
+          "package_name": "com.strolls"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "455669201430-46ceo2g3ob1camac2e5oh1hkq990bo5g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRzoRW9BnhjhOmiqPkigsIBt3VVKhTyZ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "455669201430-46ceo2g3ob1camac2e5oh1hkq990bo5g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

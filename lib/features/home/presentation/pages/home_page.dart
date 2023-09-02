@@ -1,10 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:strolls/core/getit/get_it.dart';
 import 'package:strolls/core/widgets/title_text.dart';
+import 'package:strolls/features/home/domain/entities/stroll_entity.dart';
 import 'package:strolls/features/home/presentation/widgets/glass_container_with_tap.dart';
+import 'package:strolls/features/home/presentation/widgets/notifications_badge_widget.dart';
+import 'package:strolls/features/home/presentation/widgets/round_avatar_widger.dart';
+import 'package:strolls/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:strolls/features/notification/presentation/pages/notifications_page.dart';
+import 'package:strolls/features/profile/domain/entities/user_entity.dart';
 import 'package:strolls/features/profile/presentation/bloc/profile/profile_bloc.dart';
 
 import '../bloc/strolls_bloc.dart';
@@ -21,16 +28,26 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isAllStrollsShown = true;
+  static const _pageSize = 2;
+  int page = 0;
+  final PagingController<int, StrollEntity> _pagingController =
+      PagingController(firstPageKey: 0);
+
+  final StrollsBloc strollsBloc = getIt<StrollsBloc>();
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => getIt<StrollsBloc>()..add(GetStrollsEvent()),
+          create: (context) => strollsBloc,
         ),
         BlocProvider(
           create: (context) => getIt<ProfileBloc>()..add(GetProfileEvent()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              getIt<NotificationBloc>()..add(GetNotificationsEvent()),
         ),
       ],
       child: Stack(
@@ -39,8 +56,8 @@ class _HomePageState extends State<HomePage> {
           BackgroundWithCircles(
             child: Padding(
               padding: const EdgeInsets.only(top: 10, right: 20, left: 20),
-              child: SingleChildScrollView(
-                child: SafeArea(
+              child: SafeArea(
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
                       Stack(
@@ -51,20 +68,27 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        children: [
-                          _buildAllFriendsButtons(),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Icon(
-                            CupertinoIcons.bars,
-                            color: Colors.white.withOpacity(0.7),
-                            size: 30,
-                          ),
-                        ],
-                      ),
-                      _getStrolls()
+                      // Row(
+                      //   children: [
+                      //     _buildAllFriendsButtons(),
+                      //     const SizedBox(
+                      //       width: 10,
+                      //     ),
+                      //     Icon(
+                      //       CupertinoIcons.bars,
+                      //       color: Colors.white.withOpacity(0.7),
+                      //       size: 30,
+                      //     ),
+                      //   ],
+                      // ),
+                      BlocBuilder<ProfileBloc, ProfileState>(
+                        builder: (context, state) {
+                          if(state is GotProfileState){
+                            return _getStrolls();
+                          }
+                          return Center();
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -77,115 +101,122 @@ class _HomePageState extends State<HomePage> {
     ;
   }
 
-  Widget _getStrolls() {
-    return BlocBuilder<ProfileBloc, ProfileState>(
-  builder: (context, profileState) {
-    if(profileState is GotProfileState){
-      return BlocBuilder<StrollsBloc, StrollsState>(
-        builder: (context, state) {
-          if (state is GotStrollsState) {
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    StrollItem(strollEntity: state.strolls[index], profileId: profileState.userEntity.id,),
-                  ],
-                );
-              },
-              itemCount: state.strolls.length,
-              shrinkWrap: true,
-            );
-          }
-          return const Center();
-        },
-      );
+  @override
+  void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      strollsBloc.add(GetStrollsByPageEvent(size: _pageSize, page: page));
+      page++;
+    });
+    super.initState();
+  }
 
-    }
-    return const Center(child: CupertinoActivityIndicator(),);
-  },
-);
+  Widget _getStrolls() {
+    var userEntity = Get.find<UserEntity>();
+
+    return BlocListener<StrollsBloc, StrollsState>(
+      listener: (context, state) {
+        if (state is GotStrollsState) {
+          final newItems = state.strolls;
+          final isLastPage = newItems.length < _pageSize;
+          if (isLastPage) {
+            _pagingController.appendLastPage(newItems);
+          } else {
+            final nextPageKey = page + newItems.length;
+            _pagingController.appendPage(newItems, nextPageKey);
+          }
+        }
+      },
+      child: PagedListView<int, StrollEntity>(
+        builderDelegate: PagedChildBuilderDelegate<StrollEntity>(
+            itemBuilder: (context, item, index) {
+          return Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              StrollItem(
+                strollEntity: item,
+                profileId: userEntity.id,
+              ),
+            ],
+          );
+        }, newPageProgressIndicatorBuilder: (context) {
+          return Center(
+            child: CupertinoActivityIndicator(),
+          );
+        }, firstPageProgressIndicatorBuilder: (context) {
+          return Center(
+            child: CupertinoActivityIndicator(),
+          );
+        }, noMoreItemsIndicatorBuilder: (context) {
+          return Text("No more Strolls");
+        }),
+        shrinkWrap: true,
+        primary: false,
+        pagingController: _pagingController,
+      ),
+    );
   }
 
   Widget _buildAppBar() {
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      builder: (context, state) {
-        if(state is GotProfileState){
-          return Container(
-            height: 70,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TitleText(title: "Strolls"),
-                const SizedBox(
-                  width: 10,
-                ),
-                GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, CupertinoPageRoute(builder: (context){
+    return Container(
+      height: 70,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TitleText(title: "Strolls"),
+          const SizedBox(
+            width: 10,
+          ),
+          BlocBuilder<NotificationBloc, NotificationState>(
+            builder: (context, state) {
+              if (state is GotNotificationsState) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) {
                       return const NotificationsPage();
                     }));
                   },
-                  child: Container(
-                      width: 35,
-                      height: 35,
-                      margin: const EdgeInsets.only(top: 4),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment(0.00, -1.00),
-                          end: Alignment(0, 1),
-                          colors: [Color(0xFFFFE5BF), Color(0xFFFFC555)],
-                        ),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          '1',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      )),
-                ),
-                const Spacer(),
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: 65,
-                    height: 65,
-                    child: ClipOval(
-                      child: Image.network(
-                        state.userEntity.avatarUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        begin: Alignment(0.00, -1.00),
-                        end: Alignment(0, 1),
-                        colors: [Color(0xFFBFF8FF), Color(0xFF55CCFF)],
-                      ),
-                    ),
+                  child: NotificationsBadgeWidget(
+                    count: state.notifications.length,
                   ),
-                ),
-              ],
-            ),
-          );
-        }
-        else if(state is ProfileLoadingState){
-          return const Center(child: CupertinoActivityIndicator());
-        }
-        else {
-          return const Center(child: Text("Error"),);
-        }
-      },
+                );
+              } else {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) {
+                      return const NotificationsPage();
+                    }));
+                  },
+                  child: NotificationsBadgeWidget(
+                    count: 0,
+                  ),
+                );
+              }
+            },
+          ),
+          const Spacer(),
+          BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              if (state is GotProfileState) {
+                return RoundAvatarWidget(
+                  userEntity: state.userEntity,
+                  size: 65,
+                );
+              }
+              if (state is ProfileLoadingState) {
+                return Center(
+                  child: CupertinoActivityIndicator(),
+                );
+              }
+              return Center();
+            },
+          ),
+        ],
+      ),
     );
   }
 

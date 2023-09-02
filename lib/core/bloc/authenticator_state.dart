@@ -39,4 +39,7 @@ class AuthenticatorDialog extends AuthenticatorState {
 
 class ForgetPasswordTokenSentState extends AuthenticatorState{}
 
-class SuccessConfirmForgetPasswordState extends AuthenticatorState{}
+class SuccessConfirmForgetPasswordState extends AuthenticatorState{
+
+}
+class SuccessChangedPasswordState extends AuthenticatorState{}

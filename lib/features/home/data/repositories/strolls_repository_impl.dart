@@ -108,4 +108,14 @@ class StrollsRepositoryImpl extends StrollsRepository {
       return Left(Failure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, List<StrollEntity>>> getStrollsByPage(int page, int size) async {
+    try {
+      var result = await remoteStrollsDatasource.getStrollsByPage(page, size);
+      return Right(result);
+    } on MyServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
 }

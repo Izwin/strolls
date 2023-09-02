@@ -20,6 +20,7 @@ SendRegistrationParamsModel _$SendRegistrationParamsModelFromJson(
       username: json['username'] as String,
       gender: json['gender'] as String,
       password: json['password'] as String,
+      token: json['token'] as String,
     );
 
 Map<String, dynamic> _$SendRegistrationParamsModelToJson(
@@ -35,4 +36,5 @@ Map<String, dynamic> _$SendRegistrationParamsModelToJson(
       'bio': instance.bio,
       'languages': instance.languages,
       'city': instance.city,
+      'token': instance.token,
     };
