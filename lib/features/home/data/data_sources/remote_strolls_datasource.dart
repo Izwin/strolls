@@ -48,8 +48,7 @@ class RemoteStrollsDatasource {
         gender: createStrollParams.gender.toUpperCase(),
         note: createStrollParams.note,
         title: createStrollParams.title);
-    print(requestModel.toJson());
-    print("SDS");
+
     var result = await dio.post("/strolls/create", data: requestModel.toJson());
     if (result.statusCode! >= 200 || result.statusCode! <= 300) {
       return;
